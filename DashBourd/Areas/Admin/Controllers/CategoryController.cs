@@ -29,6 +29,11 @@ namespace DashBourd.Controllers
         [HttpPost]
         public IActionResult Create(Category category)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(category);
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Categories.Add(category);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DashBourd.Models
 {
@@ -6,14 +7,18 @@ namespace DashBourd.Models
     {
         public int Id { get; set; }
 
+        [Required]
+        [MaxLength(100)]
+        [MinLength(3)]
         public string Name { get; set; } = string.Empty;
-
+        [MaxLength(500)]
+        [MinLength(5)]
         public string Description { get; set; } = string.Empty;
-
+        [Required]
         public decimal Price { get; set; }
 
-        public bool Status { get; set; } 
-
+        public bool Status { get; set; }
+        [Required]
         public DateTime DateTime { get; set; }
 
         public string? MainImage { get; set; }

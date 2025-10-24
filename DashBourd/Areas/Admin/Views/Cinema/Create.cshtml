@@ -4,6 +4,71 @@
     ViewData["Title"] = "Add New Cinema";
 }
 
+<div class="create-container">
+    <h2>🎬 Add New Cinema</h2>
+
+    <form id="CinemaForm" asp-action="Create" asp-controller="Cinema" method="post" enctype="multipart/form-data">
+        <label for="Name">Cinema Name</label>
+        <input type="text" id="Name" asp-for="Name" placeholder="Enter cinema name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+
+
+        <label for="Image">Cinema Image</label>
+        <input type="file" id="Image" asp-for="Image" accept="image/*" required />
+
+        <button type="submit">Add Cinema</button>
+    </form>
+</div>
+<script>
+    document.getElementById("CinemaForm").addEventListener("submit", function (e) {
+        e.preventDefault(); // منع الإرسال التلقائي
+
+        // جلب القيم من الفورم
+        const name = document.getElementById("Name").value.trim();
+        const image = document.getElementById("Image").files.length;
+
+        // التحقق إن الحقول متعبيه
+        if (name === "" || image === 0) {
+            // ما يظهرش Swal هنا، بس نمنع الإرسال
+            return;
+        }
+
+        // لو الاتنين تمام يبدأ Swal
+        Swal.fire({
+            title: "Are you sure you want to save this Cinema?",
+            text: "The Cinema will be saved now",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Yes, save it",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Saved successfully",
+                    text: "The Cinema has been added",
+                    icon: "success",
+                    timer: 2000,
+                    showConfirmButton: false,
+                    willClose: () => {
+                        e.target.submit(); // إرسال الفورم بعد نجاح الرسالة
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: "Cancelled",
+                    text: "The Cinema was not saved",
+                    icon: "info",
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        });
+    });
+</script>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
 <style>
     .create-container {
         max-width: 500px;
@@ -53,52 +118,3 @@
                 background-color: #4e45c2;
             }
 </style>
-
-<div class="create-container">
-    <h2>🎬 Add New Cinema</h2>
-
-    <form id="CinemaForm" asp-action="Create" asp-controller="Cinema" method="post" enctype="multipart/form-data">
-        <label for="Name">Cinema Name</label>
-        <input type="text" id="Name" name="Name" placeholder="Enter cinema name" required />
-
-        <label for="Image">Cinema Image</label>
-        <input type="file" id="Image" name="Image" accept="image/*" required />
-
-        <button type="submit">Add Cinema</button>
-    </form>
-</div>
-<script>
-    document.getElementById("CinemaForm").addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevent automatic submission
-
-        Swal.fire({
-            title: "Are you sure you want to save this Cinema ?",
-            text: "The movie will be saved now",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "Yes save it",
-            cancelButtonText: "Cancel"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: "Saved successfully",
-                    text: "The Cinema has been added",
-                    icon: "success",
-                    timer: 2000,
-                    showConfirmButton: false,
-                    willClose: () => {
-                        e.target.submit(); // Submit the form after the success message
-                    }
-                });
-            } else {
-                Swal.fire({
-                    title: "Cancelled",
-                    text: "The Cinema was not saved",
-                    icon: "info",
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            }
-        });
-    });
-</script>

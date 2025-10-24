@@ -2,6 +2,7 @@
 using Ecommerce1.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace DashBourd.Controllers
 {
@@ -22,16 +23,28 @@ namespace DashBourd.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Actor actor, IFormFile Img)
+        public IActionResult Create(Actor actor,IFormFile Image)
         {
-            if (Img != null && Img.Length > 0)
+
+            //foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            //{
+            //    Console.WriteLine(error.ErrorMessage);
+            //}
+
+            if (!ModelState.IsValid)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Img.FileName);
+               
+                return View(actor);
+            }
+
+            if (Image != null && Image.Length > 0)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Image.FileName);
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Actors", fileName);
 
                 using (var stream = System.IO.File.Create(filePath))
                 {
-                    Img.CopyTo(stream);
+                    Image.CopyTo(stream);
                 }
 
                 actor.Image = fileName;

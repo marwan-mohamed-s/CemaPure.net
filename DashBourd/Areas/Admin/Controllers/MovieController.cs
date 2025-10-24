@@ -57,6 +57,12 @@ namespace DashBourd.Controllers
         [HttpPost]
         public IActionResult Create(Movie movie, IFormFile Img, List<IFormFile> SubImgs, List<int> Actors)
         {
+            if(!ModelState.IsValid)
+            {
+                return View(movie);
+            }
+
+
             if (Img != null && Img.Length > 0)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Img.FileName);

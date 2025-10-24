@@ -27,22 +27,25 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Movie Name</label>
-                        <input  class="form-control" placeholder="Enter movie name" name="Name"/>
+                        <input  class="form-control" placeholder="Enter movie name" asp-for="Movie.Name"/>
+                        <span asp-validation-for="Movie.Name" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Price</label>
-                        <input  class="form-control" type="number" placeholder="Enter price" name="Price"/>
+                        <input class="form-control" type="number" placeholder="Enter price" asp-for="Movie.Price" min="0" />
+                        <span asp-validation-for="Movie.Price" class="text-danger"></span>
                     </div>
 
                     <div class="col-12">
                         <label class="form-label fw-semibold">Description</label>
-                        <textarea class="form-control" rows="3" placeholder="Enter movie description" name="Description"></textarea>
+                        <textarea class="form-control" rows="3" placeholder="Enter movie description" asp-for="Movie.Description"></textarea>
+                        <span asp-validation-for="Movie.Description" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Status</label>
-                        <select name="Status" class="form-select">
+                        <select asp-for="Movie.Status" class="form-select">
                             <option value="true">Available</option>
                             <option value="false">Not Available</option>
                         </select>
@@ -50,22 +53,22 @@
 
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Release Date</label>
-                        <input type="date" class="form-control" name="DateTime" />
+                        <input type="date" class="form-control" asp-for="Movie.DateTime" />
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Main Image</label>
-                        <input  type="file" class="form-control" name="Img"/>
+                        <input type="file" class="form-control" asp-for="Movie.MainImage" />
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Sub Images</label>
-                        <input type="file" multiple class="form-control" name="SubImgs"/>
+                        <input type="file" multiple class="form-control" asp-for="Movie.SubImages" />
                     </div>
 
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Category</label>
-                        <select name="CategoryId" asp-items="ViewBag.CategoryList" class="form-select">
+                        <select asp-for="Movie.CategoryId" asp-items="ViewBag.CategoryList" class="form-select">
                             @{
                                 <option value="">-- Select Category --</option>
                                 foreach (var item in Model.Categories)
@@ -80,7 +83,7 @@
 
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Cinema</label>
-                        <select name="CinemaId" asp-items="ViewBag.CinemaList" class="form-select">
+                        <select asp-for="Movie.CinemaId" asp-items="ViewBag.CinemaList" class="form-select">
                             @{
                                 <option value="">-- Select Category --</option>
                                 foreach (var item in Model.Cinemas)
@@ -96,7 +99,7 @@
                     <div class="col-12">                     
                             <label class="form-label fw-semibold mb-0">Actors</label>
 
-                        <select name="Actors" asp-items="ViewBag.ActorsList" multiple class="form-select mt-2">
+                        <select asp-for="Movie.Actors" asp-items="ViewBag.ActorsList" multiple class="form-select mt-2">
                         </select>
                         <small class="text-muted">Hold Ctrl (or Cmd) to select multiple actors</small>
                     </div>
@@ -133,31 +136,40 @@
 
 <script>
     document.getElementById("movieForm").addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevent automatic submission
+        e.preventDefault(); // نوقف الإرسال مؤقتاً
+
+        // تحقق من الفاليديشن الخاصة بـ jQuery Validation
+        var form = $(this);
+        if (!form.valid()) {
+            // لو فيه أخطاء Validation ما تفتحش الرسالة
+            return;
+        }
 
         Swal.fire({
-            title: "Are you sure you want to save this movie ?",
-            text: "The movie will be saved now",
+            title: "Are you sure you want to save this movie?",
+            text: "The movie will be saved now.",
             icon: "question",
             showCancelButton: true,
-            confirmButtonText: "Yes save it",
+            confirmButtonText: "Yes, save it",
             cancelButtonText: "Cancel"
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire({
                     title: "Saved successfully",
-                    text: "The movie has been added",
+                    text: "The movie has been added.",
                     icon: "success",
-                    timer: 2000,
-                    showConfirmButton: false,
-                    willClose: () => {
-                        e.target.submit(); // Submit the form after the success message
-                    }
+                    timer: 1500,
+                    showConfirmButton: false
                 });
+
+                // انتظر لحظة قبل الإرسال الفعلي
+                setTimeout(() => {
+                    e.target.submit();
+                }, 1500);
             } else {
                 Swal.fire({
                     title: "Cancelled",
-                    text: "The movie was not saved",
+                    text: "The movie was not saved.",
                     icon: "info",
                     timer: 2000,
                     showConfirmButton: false
@@ -166,3 +178,10 @@
         });
     });
 </script>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

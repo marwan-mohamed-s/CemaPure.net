@@ -2,6 +2,7 @@
 using Ecommerce1.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace DashBourd.Controllers
 {
@@ -18,12 +19,17 @@ namespace DashBourd.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+
+            return View(new Cinema());
         }
 
         [HttpPost]
-        public IActionResult Create(Cinema cinema, IFormFile Image)
+        public IActionResult Create(Cinema cinema,[Required] IFormFile Image)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(cinema);
+            }
 
             if (Image != null && Image.Length > 0)
             {
