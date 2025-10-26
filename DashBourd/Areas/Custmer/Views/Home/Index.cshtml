@@ -1,0 +1,112 @@
+﻿@model IEnumerable<Movie>
+
+<section class="movies-section">
+    <h2 class="section-title">🎟️ Now Showing</h2>
+
+    <!-- 🟢 أزرار الفلاتر -->
+    <section class="filter-section">
+        <button class="filter-btn active" data-category="all">All</button>
+
+        @foreach (var category in ViewBag.Categories)
+        {
+            <button class="filter-btn" data-category="@category.Name.ToLower()">@category.Name</button>
+        }
+    </section>
+
+    <!-- 🟢 الأفلام -->
+    <div class="movies-grid">
+        @foreach (var item in Model)
+        {
+            <div class="movie-card" data-category="@item.Category?.Name?.ToLower()">
+                <img src="~/images/@item.MainImage" alt="Movie Poster">
+                <div class="movie-info">
+                    <h3>🎬 @item.Name</h3>
+                    <p>📂 Category: <strong>@item.Category?.Name</strong></p>
+                    <p>📅 Date: @item.DateTime.ToString("dd MMM yyyy")</p>
+                    <div class="movie-actions">
+                        <button class="book-btn">🎟️ Book Ticket</button>
+                        <button class="info-btn">ℹ️ See Info →</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<!-- 🟡 سكريبت الفلترة -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterButtons = document.querySelectorAll(".filter-btn");
+        const movieCards = document.querySelectorAll(".movie-card");
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                // إزالة الـ active من كل الأزرار
+                filterButtons.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+
+                const category = btn.dataset.category;
+
+                movieCards.forEach(card => {
+                    const movieCategory = card.dataset.category;
+
+                    // لو "All" أو نفس الكاتيجوري، نعرض الكارد
+                    if (category === "all" || movieCategory === category) {
+                        card.style.display = "block";
+                        card.classList.add("fade-in");
+                    } else {
+                        card.style.display = "none";
+                        card.classList.remove("fade-in");
+                    }
+                });
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const pageNumbers = document.querySelectorAll(".page-number");
+      const prevBtn = document.querySelector(".prev");
+      const nextBtn = document.querySelector(".next");
+      let activePage = 1;
+      const totalPages = pageNumbers.length;
+
+      function updatePagination() {
+        pageNumbers.forEach((btn) => {
+          btn.classList.remove("active");
+          if (parseInt(btn.dataset.page) === activePage) {
+            btn.classList.add("active");
+          }
+        });
+
+        prevBtn.disabled = activePage === 1;
+        nextBtn.disabled = activePage === totalPages;
+      }
+
+      pageNumbers.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activePage = parseInt(btn.dataset.page);
+          updatePagination();
+          console.log("Page:", activePage);
+        });
+      });
+
+      prevBtn.addEventListener("click", () => {
+        if (activePage > 1) {
+          activePage--;
+          updatePagination();
+          console.log("Page:", activePage);
+        }
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (activePage < totalPages) {
+          activePage++;
+          updatePagination();
+          console.log("Page:", activePage);
+        }
+      });
+
+      updatePagination();
+    });
+</script>

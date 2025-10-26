@@ -8,6 +8,7 @@ using System.Diagnostics;
 
 namespace DashBourd.Controllers
 {
+    [Area("Admin")]
     public class MovieController : Controller
     {
         private readonly ILogger<MovieController> _logger;
@@ -33,54 +34,62 @@ namespace DashBourd.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            // تحميل القوائم اللي الفورم محتاجها
+            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Cinemas = _context.Cinemas.ToList();
+            ViewBag.ActorsList = _context.Actors
+                .Select(a => new SelectListItem
+                {
+                    Value = a.Id.ToString(),
+                    Text = a.Name
+                }).ToList();
 
-
-            var cinemas = _context.Cinemas.ToList();
-            var categories = _context.Categories.ToList();
-            var actors = _context.Actors.ToList();
-
-            var movieVM = new MovieVM
-            {
-                Categories = categories,
-                Cinemas = cinemas
-            };
-
-            ViewBag.ActorsList = actors.Select(a => new SelectListItem
-            {
-                Value = a.Id.ToString(),
-                Text = a.Name
-            }).ToList();
-
-            return View(movieVM);
+            // عشان الـ View متوقع @model Movie
+            return View(new Movie());
         }
 
+
         [HttpPost]
-        public IActionResult Create(Movie movie, IFormFile Img, List<IFormFile> SubImgs, List<int> Actors)
+        public IActionResult Create(Movie movie, IFormFile MainImage, List<IFormFile> SubImages, List<int> Actors)
         {
-            if(!ModelState.IsValid)
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
             {
+                Console.WriteLine(error.ErrorMessage);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                // لازم نرجع القوائم تاني عشان الـ View يعرف يعرضها
+                ViewBag.Categories = _context.Categories.ToList();
+                ViewBag.Cinemas = _context.Cinemas.ToList();
+                ViewBag.ActorsList = _context.Actors
+                    .Select(a => new SelectListItem
+                    {
+                        Value = a.Id.ToString(),
+                        Text = a.Name
+                    }).ToList();
+
                 return View(movie);
             }
 
-
-            if (Img != null && Img.Length > 0)
+            if (MainImage != null && MainImage.Length > 0)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Img.FileName);
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(MainImage.FileName);
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
 
                 using (var stream = System.IO.File.Create(filePath))
                 {
-                    Img.CopyTo(stream);
+                    MainImage.CopyTo(stream);
                 }
 
                 movie.MainImage = fileName;
             }
 
-            if (SubImgs != null && SubImgs.Count > 0)
+            if (SubImages != null && SubImages.Count > 0)
             {
                 movie.SubImages = new List<string>();
 
-                foreach (var subImg in SubImgs)
+                foreach (var subImg in SubImages)
                 {
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(subImg.FileName);
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/MovieSubImg", fileName);
@@ -110,8 +119,8 @@ namespace DashBourd.Controllers
                 }
                 _context.SaveChanges();
             }
-            return RedirectToAction("Index");
 
+            return RedirectToAction("Index");
         }
 
         public IActionResult Details(int id)

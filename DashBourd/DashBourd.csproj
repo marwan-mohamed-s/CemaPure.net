@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Custmer\Controllers\" />
-    <Folder Include="Areas\Custmer\Data\" />
-    <Folder Include="Areas\Custmer\Models\" />
-    <Folder Include="Areas\Custmer\Views\" />
     <Folder Include="wwwroot\Images\MovieSubImg\" />
     <Folder Include="wwwroot\Images\Actors\" />
     <Folder Include="wwwroot\Images\Cinemas\" />

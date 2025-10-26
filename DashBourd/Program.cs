@@ -26,9 +26,10 @@
 
             app.MapStaticAssets();
             app.MapControllerRoute(
-                name: "default",
-                pattern: "{area=Admin}/{controller=Movie}/{action=Index}/{id?}")
-                .WithStaticAssets();
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+
 
             app.Run();
         }

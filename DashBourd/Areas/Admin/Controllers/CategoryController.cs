@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DashBourd.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;

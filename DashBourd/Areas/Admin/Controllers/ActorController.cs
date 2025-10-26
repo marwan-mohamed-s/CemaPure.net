@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DashBourd.Controllers
 {
+    [Area("Admin")]
     public class ActorController : Controller
     {
         ApplicationDbContext _Context = new ApplicationDbContext();

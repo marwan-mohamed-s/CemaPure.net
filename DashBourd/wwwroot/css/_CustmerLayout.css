@@ -1,0 +1,467 @@
+﻿/* ============================= */
+/* 🎬 GENERAL STYLE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background-color: #000;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+/* ============================= */
+/* 🎬 NAVBAR */
+nav {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 10%;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+}
+
+.logo h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #e50914;
+    letter-spacing: 1px;
+}
+
+.logo span {
+    color: #fff;
+}
+
+nav ul {
+    display: flex;
+    gap: 25px;
+}
+
+    nav ul li a {
+        color: #fff;
+        font-weight: 500;
+        transition: 0.3s;
+        font-size: 15px;
+    }
+
+        nav ul li a:hover {
+            color: #e50914;
+            border-bottom: 2px solid #e50914;
+            padding-bottom: 4px;
+        }
+
+/* ============================= */
+/* 🎥 SWIPER SLIDER */
+.swiper {
+    width: 100%;
+    height: 100vh;
+    margin-top: 70px;
+}
+
+.image {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+    .image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .image .black {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, rgba(0, 0, 0, 0.8) 30%, transparent);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 8%;
+    }
+
+        .image .black h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+.star i {
+    color: #ffb400;
+}
+
+.black p {
+    max-width: 500px;
+    font-size: 15px;
+    margin: 15px 0;
+    line-height: 1.6;
+    color: #ddd;
+}
+
+.genre {
+    display: flex;
+    gap: 10px;
+}
+
+.category {
+    border: 1px solid #fff;
+    padding: 4px 10px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+    .category:hover {
+        background: #e50914;
+        border-color: #e50914;
+    }
+
+.watch {
+    margin-top: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+    .watch i {
+        background: #e50914;
+        padding: 10px;
+        border-radius: 50%;
+    }
+
+    .watch:hover {
+        transform: scale(1.05);
+    }
+
+
+.image {
+    position: relative;
+    overflow: visible; /* عشان الشادو يخرج بره */
+}
+
+    .image img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 10px;
+        box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4); /* شادو أساسي ناعم */
+    }
+
+    /* لو عاوز الشادو ياخد لون مقارب للّون السفلي من الصورة */
+    .image::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.4));
+        filter: blur(15px);
+        z-index: -1; /* يخليه ورا الصورة */
+    }
+
+
+/* ============================= */
+/* 🎞️ MOVIES SECTION */
+.movies-section {
+    padding: 80px 10%;
+    background: #0b0b0b;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 2.2rem;
+    margin-bottom: 50px;
+    color: #e50914;
+    font-weight: 600;
+}
+
+/* Grid of Movies */
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 40px;
+}
+
+/* Card Style */
+.movie-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    transition: transform 0.4s ease;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+    .movie-card img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        transition: transform 0.6s ease, filter 0.5s;
+    }
+
+    .movie-card:hover img {
+        transform: scale(1.1);
+        filter: brightness(35%);
+    }
+
+/*    btn*/
+
+
+.movie-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.book-btn,
+.info-btn {
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.book-btn {
+    background: linear-gradient(135deg, #e50914, #b00610);
+    color: white;
+}
+
+    .book-btn:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #ff1b2d, #b00610);
+    }
+
+.info-btn {
+    background: transparent;
+    border: 1.5px solid #e50914;
+    color: #e50914;
+}
+
+    .info-btn:hover {
+        background: #e50914;
+        color: white;
+        transform: scale(1.05);
+    }
+
+/* Info Overlay */
+.movie-info {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.4s ease;
+}
+
+.movie-card:hover .movie-info {
+    opacity: 1;
+}
+
+.movie-info h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.movie-info p {
+    color: #ccc;
+    font-size: 0.95rem;
+    margin: 10px 0 15px;
+}
+
+/* Book Button */
+.book-btn {
+    background: #e50914;
+    border: none;
+    padding: 10px 25px;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+    .book-btn:hover {
+        background: #b00610;
+        transform: scale(1.05);
+    }
+
+/* ============================= */
+/* ✉️ NEWSLETTER */
+.newsletter {
+    background: #111;
+    padding: 80px 10%;
+    text-align: center;
+}
+
+    .newsletter h1 {
+        font-size: 2rem;
+        margin-bottom: 30px;
+        color: #e50914;
+    }
+
+.news_card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+    .news_card input {
+        padding: 12px 20px;
+        width: 300px;
+        border-radius: 8px;
+        border: none;
+        outline: none;
+        font-size: 15px;
+    }
+
+    .news_card button {
+        background: #e50914;
+        color: #fff;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .news_card button:hover {
+            background: #b00610;
+        }
+
+/* ============================= */
+/* ⚫ FOOTER */
+.end {
+    text-align: center;
+    padding: 25px 0;
+    background: #000;
+    font-size: 15px;
+    color: #ccc;
+}
+
+    .end span {
+        color: #e50914;
+        margin-left: 8px;
+    }
+
+    .end i {
+        margin-right: 5px;
+    }
+
+/* ============================= */
+/* 📱 RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+        nav ul {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+    .image .black h1 {
+        font-size: 2rem;
+    }
+
+    .black p {
+        font-size: 14px;
+        width: 90%;
+    }
+
+    .movie-card img {
+        height: 320px;
+    }
+}
+
+/* ============================= */
+/* ✨ ANIMATIONS */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.movies-section {
+    animation: fadeUp 1s ease;
+}
+
+.movie-card {
+    animation: fadeUp 1.2s ease;
+}
+
+
+/* ===== Filter Buttons Section ===== */
+.filter-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 40px 0;
+}
+
+.filter-btn {
+    background: #1b1b1b;
+    color: #fff;
+    border: 2px solid #e50914;
+    padding: 10px 22px;
+    border-radius: 25px;
+    font-size: 1rem;
+    text-transform: capitalize;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+    .filter-btn:hover {
+        background: #e50914;
+        transform: translateY(-3px);
+    }
+
+    .filter-btn.active {
+        background: #e50914;
+        color: #fff;
+        box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+    }
