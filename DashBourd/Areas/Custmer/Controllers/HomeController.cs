@@ -7,8 +7,13 @@ namespace DashBourd.Areas.Custmer.Controllers
     [Area("Custmer")]
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _context;
 
-        ApplicationDbContext _context = new ApplicationDbContext();
+        public HomeController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
             var movies = _context.Movies

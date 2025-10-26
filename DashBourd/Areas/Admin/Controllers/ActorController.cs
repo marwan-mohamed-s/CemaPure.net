@@ -1,126 +1,123 @@
 ﻿using DashBourd.Models;
-using Ecommerce1.DataAccess;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace DashBourd.Controllers
 {
     [Area("Admin")]
     public class ActorController : Controller
     {
-        ApplicationDbContext _Context = new ApplicationDbContext();
+        private readonly IGenericRepository<Actor> _actorRepo;
+        private readonly IWebHostEnvironment _env;
 
-        public IActionResult Index()
+        public ActorController(IGenericRepository<Actor> actorRepo, IWebHostEnvironment env)
         {
-            var actors = _Context.Actors.ToList();
+            _actorRepo = actorRepo;
+            _env = env;
+        }
+
+        // ✅ عرض كل الممثلين
+        public async Task<IActionResult> Index()
+        {
+            var actors = await _actorRepo.GetAsync();
             return View(actors);
         }
 
+        // ✅ صفحة الإضافة
         [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public IActionResult Create() => View();
 
+        // ✅ تنفيذ الإضافة
         [HttpPost]
-        public IActionResult Create(Actor actor,IFormFile Image)
+        public async Task<IActionResult> Create(Actor actor, IFormFile? Image)
         {
-
-            //foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            //{
-            //    Console.WriteLine(error.ErrorMessage);
-            //}
-
             if (!ModelState.IsValid)
-            {
-               
                 return View(actor);
-            }
 
             if (Image != null && Image.Length > 0)
             {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Image.FileName);
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Actors", fileName);
+                var fileName = Guid.NewGuid() + Path.GetExtension(Image.FileName);
+                var filePath = Path.Combine(_env.WebRootPath, "images/Actors", fileName);
 
                 using (var stream = System.IO.File.Create(filePath))
                 {
-                    Image.CopyTo(stream);
+                    await Image.CopyToAsync(stream);
                 }
 
                 actor.Image = fileName;
             }
 
-            _Context.Actors.Add(actor);
-            _Context.SaveChanges();
+            await _actorRepo.AddAsync(actor);
+            await _actorRepo.CommitAsync();
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
+        // ✅ صفحة التعديل
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var actor = _Context.Actors.FirstOrDefault(a => a.Id == id);
+            var actor = await _actorRepo.GetOneAsync(a => a.Id == id);
             if (actor == null)
-            {
                 return NotFound();
-            }
+
             return View(actor);
         }
 
+        // ✅ تنفيذ التعديل
         [HttpPost]
-        public IActionResult Edit(Actor actor, IFormFile Img)
+        public async Task<IActionResult> Edit(Actor actor, IFormFile? Img)
         {
-            var existingActor = _Context.Actors.FirstOrDefault(a => a.Id == actor.Id);
-            if (existingActor == null)
-            {
+            var existing = await _actorRepo.GetOneAsync(a => a.Id == actor.Id);
+            if (existing == null)
                 return NotFound();
-            }
 
-            existingActor.Name = actor.Name;
+            existing.Name = actor.Name;
 
             if (Img != null && Img.Length > 0)
             {
-                if (!string.IsNullOrEmpty(existingActor.Image))
+                if (!string.IsNullOrEmpty(existing.Image))
                 {
-                    var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Actors", existingActor.Image);
+                    var oldPath = Path.Combine(_env.WebRootPath, "images/Actors", existing.Image);
                     if (System.IO.File.Exists(oldPath))
                         System.IO.File.Delete(oldPath);
                 }
 
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Img.FileName);
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Actors", fileName);
+                var fileName = Guid.NewGuid() + Path.GetExtension(Img.FileName);
+                var filePath = Path.Combine(_env.WebRootPath, "images/Actors", fileName);
+
                 using (var stream = System.IO.File.Create(filePath))
                 {
-                    Img.CopyTo(stream);
+                    await Img.CopyToAsync(stream);
                 }
 
-                existingActor.Image = fileName;
+                existing.Image = fileName;
             }
 
-            _Context.Actors.Update(existingActor);
-            _Context.SaveChanges();
+            _actorRepo.Update(existing);
+            await _actorRepo.CommitAsync();
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Delete(int id)
+        // ✅ حذف ممثل
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
         {
-            var actor = _Context.Actors.FirstOrDefault(a => a.Id == id);
-            if (actor != null)
-            {
-                if (!string.IsNullOrEmpty(actor.Image))
-                {
-                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/Actors", actor.Image);
-                    if (System.IO.File.Exists(path))
-                        System.IO.File.Delete(path);
-                }
+            var actor = await _actorRepo.GetOneAsync(a => a.Id == id);
+            if (actor == null)
+                return NotFound();
 
-                _Context.Actors.Remove(actor);
-                _Context.SaveChanges();
+            if (!string.IsNullOrEmpty(actor.Image))
+            {
+                var path = Path.Combine(_env.WebRootPath, "images/Actors", actor.Image);
+                if (System.IO.File.Exists(path))
+                    System.IO.File.Delete(path);
             }
 
-            return RedirectToAction("Index");
+            _actorRepo.Delete(actor);
+            await _actorRepo.CommitAsync();
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

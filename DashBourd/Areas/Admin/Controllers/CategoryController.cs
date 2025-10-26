@@ -1,23 +1,21 @@
 ﻿using DashBourd.Models;
-using Ecommerce1.DataAccess;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DashBourd.Controllers
 {
     [Area("Admin")]
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IGenericRepository<Category> _repository;
 
-        public CategoryController()
+        public CategoryController(IGenericRepository<Category> repository)
         {
-            _context = new ApplicationDbContext();
+            _repository = repository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var categories = _context.Categories.ToList();
+            var categories = await _repository.GetAsync();
             return View(categories);
         }
 
@@ -28,26 +26,21 @@ namespace DashBourd.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Category category)
+        public async Task<IActionResult> Create(Category category)
         {
             if (!ModelState.IsValid)
-            {
                 return View(category);
-            }
 
-            if (ModelState.IsValid)
-            {
-                _context.Categories.Add(category);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(category);
+            await _repository.AddAsync(category);
+            await _repository.CommitAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+            var category = await _repository.GetOneAsync(c => c.Id == id);
             if (category == null)
                 return NotFound();
 
@@ -55,33 +48,33 @@ namespace DashBourd.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Category category)
+        public async Task<IActionResult> Edit(Category category)
         {
-            if (ModelState.IsValid)
-            {
-                var existingCategory = _context.Categories.FirstOrDefault(c => c.Id == category.Id);
-                if (existingCategory == null)
-                    return NotFound();
+            if (!ModelState.IsValid)
+                return View(category);
 
-                existingCategory.Name = category.Name;
-                _context.Categories.Update(existingCategory);
-                _context.SaveChanges();
+            var existing = await _repository.GetOneAsync(c => c.Id == category.Id);
+            if (existing == null)
+                return NotFound();
 
-                return RedirectToAction("Index");
-            }
-            return View(category);
+            existing.Name = category.Name;
+
+            _repository.Update(existing);
+            await _repository.CommitAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+            var category = await _repository.GetOneAsync(c => c.Id == id);
             if (category != null)
             {
-                _context.Categories.Remove(category);
-                _context.SaveChanges();
+                _repository.Delete(category);
+                await _repository.CommitAsync();
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using DashBourd.Models;
-using DashBourd.ViewModel;
-using Ecommerce1.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace DashBourd.Controllers
 {
@@ -12,46 +11,60 @@ namespace DashBourd.Controllers
     public class MovieController : Controller
     {
         private readonly ILogger<MovieController> _logger;
-        private readonly ApplicationDbContext _context;
+        private readonly IGenericRepository<Movie> _movieRepo;
+        private readonly IGenericRepository<MovieActor> _movieActorRepo;
+        private readonly IGenericRepository<Category> _categoryRepo;
+        private readonly IGenericRepository<Cinema> _cinemaRepo;
+        private readonly IGenericRepository<Actor> _actorRepo;
 
-        public MovieController(ILogger<MovieController> logger)
+        public MovieController(
+            ILogger<MovieController> logger,
+            IGenericRepository<Movie> movieRepo,
+            IGenericRepository<MovieActor> movieActorRepo,
+            IGenericRepository<Category> categoryRepo,
+            IGenericRepository<Cinema> cinemaRepo,
+            IGenericRepository<Actor> actorRepo)
         {
             _logger = logger;
-            _context = new ApplicationDbContext();
+            _movieRepo = movieRepo;
+            _movieActorRepo = movieActorRepo;
+            _categoryRepo = categoryRepo;
+            _cinemaRepo = cinemaRepo;
+            _actorRepo = actorRepo;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-
-            var movies = _context.Movies
-                .Include(m => m.Category)
-                .Include(m => m.Cinema)
-                .ToList();
+            var movies = await _movieRepo.GetAsync(
+                includes: new Expression<Func<Movie, object>>[]
+                {
+                    m => m.Category,
+                    m => m.Cinema
+                });
 
             return View(movies);
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            // تحميل القوائم اللي الفورم محتاجها
-            ViewBag.Categories = _context.Categories.ToList();
-            ViewBag.Cinemas = _context.Cinemas.ToList();
-            ViewBag.ActorsList = _context.Actors
+            ViewBag.Categories = await _categoryRepo.GetAsync();
+            ViewBag.Cinemas = await _cinemaRepo.GetAsync();
+            ViewBag.ActorsList = (await _actorRepo.GetAsync())
                 .Select(a => new SelectListItem
                 {
                     Value = a.Id.ToString(),
                     Text = a.Name
                 }).ToList();
 
-            // عشان الـ View متوقع @model Movie
             return View(new Movie());
         }
 
-
         [HttpPost]
-        public IActionResult Create(Movie movie, IFormFile MainImage, List<IFormFile> SubImages, List<int> Actors)
+        public async Task<IActionResult> Create(Movie movie, IFormFile MainImage, List<IFormFile> SubImages, List<int> Actors)
         {
+
+
             foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
             {
                 Console.WriteLine(error.ErrorMessage);
@@ -59,10 +72,9 @@ namespace DashBourd.Controllers
 
             if (!ModelState.IsValid)
             {
-                // لازم نرجع القوائم تاني عشان الـ View يعرف يعرضها
-                ViewBag.Categories = _context.Categories.ToList();
-                ViewBag.Cinemas = _context.Cinemas.ToList();
-                ViewBag.ActorsList = _context.Actors
+                ViewBag.Categories = await _categoryRepo.GetAsync();
+                ViewBag.Cinemas = await _cinemaRepo.GetAsync();
+                ViewBag.ActorsList = (await _actorRepo.GetAsync())
                     .Select(a => new SelectListItem
                     {
                         Value = a.Id.ToString(),
@@ -72,6 +84,7 @@ namespace DashBourd.Controllers
                 return View(movie);
             }
 
+            // حفظ الصورة الأساسية
             if (MainImage != null && MainImage.Length > 0)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(MainImage.FileName);
@@ -79,12 +92,13 @@ namespace DashBourd.Controllers
 
                 using (var stream = System.IO.File.Create(filePath))
                 {
-                    MainImage.CopyTo(stream);
+                    await MainImage.CopyToAsync(stream);
                 }
 
                 movie.MainImage = fileName;
             }
 
+            // حفظ الصور الفرعية
             if (SubImages != null && SubImages.Count > 0)
             {
                 movie.SubImages = new List<string>();
@@ -96,16 +110,17 @@ namespace DashBourd.Controllers
 
                     using (var stream = System.IO.File.Create(filePath))
                     {
-                        subImg.CopyTo(stream);
+                        await subImg.CopyToAsync(stream);
                     }
 
                     movie.SubImages.Add(fileName);
                 }
             }
 
-            _context.Movies.Add(movie);
-            _context.SaveChanges();
+            await _movieRepo.AddAsync(movie);
+            await _movieRepo.CommitAsync();
 
+            // إضافة الممثلين للفيلم
             if (Actors != null && Actors.Count > 0)
             {
                 foreach (var actorId in Actors)
@@ -115,22 +130,24 @@ namespace DashBourd.Controllers
                         MovieId = movie.Id,
                         ActorId = actorId
                     };
-                    _context.MovieActors.Add(movieActor);
+                    await _movieActorRepo.AddAsync(movieActor);
                 }
-                _context.SaveChanges();
+                await _movieActorRepo.CommitAsync();
             }
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            var movie = _context.Movies
-                .Include(m => m.Category)
-                .Include(m => m.Cinema)
-                .Include(m => m.MovieActors)
-                    .ThenInclude(ma => ma.Actor)
-                .FirstOrDefault(m => m.Id == id);
+            var movie = await _movieRepo.GetOneAsync(
+                m => m.Id == id,
+                include: q => q
+                    .Include(m => m.Category)
+                    .Include(m => m.Cinema)
+                    .Include(m => m.MovieActors)
+                        .ThenInclude(ma => ma.Actor)
+            );
 
             if (movie == null)
                 return NotFound();
@@ -140,27 +157,28 @@ namespace DashBourd.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var movie = _context.Movies.FirstOrDefault(m => m.Id == id);
+            var movie = await _movieRepo.GetOneAsync(m => m.Id == id);
             if (movie == null)
                 return NotFound();
 
-            ViewBag.Categories = _context.Categories.ToList();
-            ViewBag.Cinemas = _context.Cinemas.ToList();
-            ViewBag.ActorsList = _context.Actors.Select(a => new SelectListItem
-            {
-                Value = a.Id.ToString(),
-                Text = a.Name
-            }).ToList();
+            ViewBag.Categories = await _categoryRepo.GetAsync();
+            ViewBag.Cinemas = await _cinemaRepo.GetAsync();
+            ViewBag.ActorsList = (await _actorRepo.GetAsync())
+                .Select(a => new SelectListItem
+                {
+                    Value = a.Id.ToString(),
+                    Text = a.Name
+                }).ToList();
 
             return View(movie);
         }
 
         [HttpPost]
-        public IActionResult Edit(Movie movie, IFormFile Img, List<IFormFile> SubImgs)
+        public async Task<IActionResult> Edit(Movie movie, IFormFile Img, List<IFormFile> SubImgs)
         {
-            var existingMovie = _context.Movies.FirstOrDefault(m => m.Id == movie.Id);
+            var existingMovie = await _movieRepo.GetOneAsync(m => m.Id == movie.Id);
             if (existingMovie == null)
                 return NotFound();
 
@@ -170,6 +188,7 @@ namespace DashBourd.Controllers
             existingMovie.CinemaId = movie.CinemaId;
             existingMovie.CategoryId = movie.CategoryId;
 
+            // الصورة الرئيسية
             if (Img != null && Img.Length > 0)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(Img.FileName);
@@ -177,12 +196,13 @@ namespace DashBourd.Controllers
 
                 using (var stream = System.IO.File.Create(filePath))
                 {
-                    Img.CopyTo(stream);
+                    await Img.CopyToAsync(stream);
                 }
 
                 existingMovie.MainImage = fileName;
             }
 
+            // الصور الفرعية
             if (SubImgs != null && SubImgs.Count > 0)
             {
                 existingMovie.SubImages = new List<string>();
@@ -194,31 +214,32 @@ namespace DashBourd.Controllers
 
                     using (var stream = System.IO.File.Create(filePath))
                     {
-                        subImg.CopyTo(stream);
+                        await subImg.CopyToAsync(stream);
                     }
 
                     existingMovie.SubImages.Add(fileName);
                 }
             }
 
-            _context.SaveChanges();
+            _movieRepo.Update(existingMovie);
+            await _movieRepo.CommitAsync();
+
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var movie = _context.Movies.FirstOrDefault(m => m.Id == id);
+            var movie = await _movieRepo.GetOneAsync(m => m.Id == id);
             if (movie == null)
                 return NotFound();
 
-            _context.Movies.Remove(movie);
-            _context.SaveChanges();
+            _movieRepo.Delete(movie);
+            await _movieRepo.CommitAsync();
 
             TempData["success"] = "Movie deleted successfully!";
             return RedirectToAction("Index");
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
