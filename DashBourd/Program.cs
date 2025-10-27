@@ -35,6 +35,12 @@ namespace DashBourd
 
             app.MapStaticAssets();
             app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}",
+                defaults: new { area = "Custmer" }); 
+
+
+            app.MapControllerRoute(
                 name: "areas",
                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 

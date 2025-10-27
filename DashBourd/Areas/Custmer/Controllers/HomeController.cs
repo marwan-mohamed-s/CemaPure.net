@@ -27,5 +27,21 @@ namespace DashBourd.Areas.Custmer.Controllers
             ViewBag.Categories = categories;
             return View(movies);
         }
+
+        public IActionResult Details(int id)
+        {
+            var movie = _context.Movies
+                .Include(m => m.Category)
+                .Include(m => m.Cinema)
+                .Include(m => m.MovieActors)
+                    .ThenInclude(ma => ma.Actor)
+                .FirstOrDefault(m => m.Id == id);
+
+            if (movie == null)
+                return NotFound();
+
+            return View(movie);
+        }
+
     }
 }

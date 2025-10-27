@@ -15,18 +15,15 @@ namespace DashBourd.Controllers
             _env = env;
         }
 
-        // ✅ عرض كل الممثلين
         public async Task<IActionResult> Index()
         {
             var actors = await _actorRepo.GetAsync();
             return View(actors);
         }
 
-        // ✅ صفحة الإضافة
         [HttpGet]
         public IActionResult Create() => View();
 
-        // ✅ تنفيذ الإضافة
         [HttpPost]
         public async Task<IActionResult> Create(Actor actor, IFormFile? Image)
         {
@@ -52,7 +49,6 @@ namespace DashBourd.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ✅ صفحة التعديل
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -63,7 +59,6 @@ namespace DashBourd.Controllers
             return View(actor);
         }
 
-        // ✅ تنفيذ التعديل
         [HttpPost]
         public async Task<IActionResult> Edit(Actor actor, IFormFile? Img)
         {
@@ -99,7 +94,6 @@ namespace DashBourd.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ✅ حذف ممثل
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
