@@ -28,6 +28,7 @@ namespace DashBourd
                 options.Password.RequireDigit = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 6;
+                options.SignIn.RequireConfirmedEmail = true ;
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
@@ -64,8 +65,8 @@ namespace DashBourd
             // 8️⃣ المسار الافتراضي (تقدر تحدد منطقة افتراضية لو عايز)
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}",
-                defaults: new { area = "Custmer" });
+                pattern: "{controller=Account}/{action=Register}/{id?}",
+                defaults: new { area = "Identity" });
 
             app.Run();
         }
