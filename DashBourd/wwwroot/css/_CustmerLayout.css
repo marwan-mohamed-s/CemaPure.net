@@ -465,3 +465,63 @@ nav ul {
         color: #fff;
         box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
     }
+
+
+/*الشريط السفلي - Dock Bar*/
+.dock {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 40px;
+    background: rgba(255, 255, 255, 0.1); /* أفتح شوية من الرمادي */
+    padding: 14px 28px;
+    border-radius: 40px;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.dock-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.icon {
+    width: 32px;
+    height: 32px;
+    stroke: #fff; /* أبيض بدل الأسود عشان يبان على الخلفية الغامقة */
+    transition: transform 0.3s ease;
+}
+
+.dock-item:hover .icon {
+    transform: scale(1.5);
+    stroke: #ff0000ef; /* لون أزرق فاتح وقت الـ hover */
+}
+
+.dock-item::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 50px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 6px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.dock-item:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+}
