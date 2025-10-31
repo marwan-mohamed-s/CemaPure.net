@@ -1,7 +1,9 @@
 ﻿using DashBourd.Models;
 using DashBourd.ViewModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using System.Threading.Tasks;
 
 namespace DashBourd.Areas.Identity.Controllers
@@ -11,9 +13,11 @@ namespace DashBourd.Areas.Identity.Controllers
     {
         readonly UserManager<ApplicationUser> _userManager;
         readonly SignInManager<ApplicationUser> _signInManager;
-        public AccountController(UserManager<ApplicationUser> userManager , SignInManager<ApplicationUser> signInManager) {
+        private readonly IEmailSender _emailSender;
+        public AccountController(UserManager<ApplicationUser> userManager , SignInManager<ApplicationUser> signInManager, IEmailSender emailSender) {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailSender = emailSender;
         }
 
         public IActionResult Register()
@@ -39,13 +43,16 @@ namespace DashBourd.Areas.Identity.Controllers
                 return View(registerVM);
             }
 
-            var result = await _userManager.CreateAsync(new()
+            var user = new ApplicationUser()
             {
                 FirstName = registerVM.FirstName,
                 LastName = registerVM.LastName,
                 Email = registerVM.Email,
                 UserName = registerVM.UserName,
-            }, registerVM.Password);
+            };
+
+            var result = await _userManager.CreateAsync(user, registerVM.Password);
+
 
             if (!result.Succeeded)
             {
@@ -56,9 +63,33 @@ namespace DashBourd.Areas.Identity.Controllers
                 return View(registerVM);
             }
 
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var link = Url.Action(nameof(ConfirmEmail), "Account", new { area = "Identity", token, userId = user.Id }, Request.Scheme);
+
+            await _emailSender.SendEmailAsync(registerVM.Email, "Ecommerce 519 - Confirm Your Email!"
+                , $"<h1>Confirm Your Email By Clicking <a href='{link}'>Here</a></h1>");
+
+            TempData["SuccessMessage"] = "تم الحفظ بنجاح!";
+
             return RedirectToAction("Login");
         }
 
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null)
+                TempData["error-notification"] = "Invalid User Cred.";
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+
+            if (!result.Succeeded)
+                TempData["error-notification"] = "Invalid OR Expired Token";
+            else
+                TempData["success-notification"] = "Confirm Email Successfully";
+
+            return RedirectToAction("Login");
+        }
 
         public IActionResult Login()
         {

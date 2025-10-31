@@ -1,2 +1,48 @@
-﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+﻿@* ✅ Views/Shared/_NotificationPartial.cshtml *@
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-bottom-left",
+        "timeOut": "4000",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+
+    const style = document.createElement("style");
+    style.innerHTML = `
+        .toast-success {
+            background-color: #28a745 !important;
+            color: white !important;
+        }
+        .toast-error {
+            background-color: #dc3545 !important;
+            color: white !important;
+        }
+        .toast-info {
+            background-color: #17a2b8 !important;
+            color: white !important;
+        }
+        .toast-warning {
+            background-color: #ffc107 !important;
+            color: black !important;
+        }
+        .toast {
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+            direction: rtl;
+            font-family: "Segoe UI", "Tahoma", sans-serif;
+        }
+    `;
+    document.head.appendChild(style);
+
+    $(function () {
+        @if (TempData["SuccessMessage"] != null)
+        {
+                <text>toastr.success("@Html.Raw(TempData["SuccessMessage"])");</text>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+                <text>toastr.error("@Html.Raw(TempData["ErrorMessage"])");</text>
+        }
+    });
+</script>

@@ -3,6 +3,33 @@
 @{
     ViewData["Title"] = "Login";
 }
+@section Scripts {
+    <script>
+        toastr.options = {
+            "closeButton": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "4000",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "backgroundColor": "#444", // 👈 لون الخلفية الافتراضية للرسائل
+            "newestOnTop": true
+        };
+
+
+        // ✅ عرض الرسائل من TempData
+        $(function () {
+            @if (TempData["SuccessMessage"] != null)
+            {
+                    <text>toastr.success("@Html.Raw(TempData["SuccessMessage"])");</text>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                    <text>toastr.error("@Html.Raw(TempData["ErrorMessage"])");</text>
+            }
+        });
+    </script>
+}
 
 <h1>Login</h1>
 
@@ -42,6 +69,4 @@
     <a asp-action="Register">Register</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+
