@@ -69,7 +69,7 @@ namespace DashBourd.Areas.Identity.Controllers
             await _emailSender.SendEmailAsync(registerVM.Email, "Ecommerce 519 - Confirm Your Email!"
                 , $"<h1>Confirm Your Email By Clicking <a href='{link}'>Here</a></h1>");
 
-            TempData["SuccessMessage"] = "تم الحفظ بنجاح!";
+            TempData["SuccessMessage"] = "Create Account Successfully , Confierm your Email by Check Your box";
 
             return RedirectToAction("Login");
         }
@@ -79,16 +79,68 @@ namespace DashBourd.Areas.Identity.Controllers
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user is null)
-                TempData["error-notification"] = "Invalid User Cred.";
+                TempData["ErrorMessage"] = "Invalid User Cred.";
 
-            var result = await _userManager.ConfirmEmailAsync(user, token);
+            var result = await _userManager.ConfirmEmailAsync(user!, token);
 
             if (!result.Succeeded)
-                TempData["error-notification"] = "Invalid OR Expired Token";
+                TempData["ErrorMessage"] = "Invalid OR Expired Token";
             else
-                TempData["success-notification"] = "Confirm Email Successfully";
+                TempData["SuccessMessage"] = "Confirm Email Successfully";
 
             return RedirectToAction("Login");
+        }
+
+
+        public IActionResult ResendConfiremEmail()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResendConfiremEmail(ResendEmailConfiremVM resendEmailConfiremVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                foreach (var key in ModelState.Keys)
+                {
+                    var errors = ModelState[key].Errors;
+                    foreach (var error in errors)
+                    {
+                        Console.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
+                    }
+                }
+                return View(resendEmailConfiremVM);
+            }
+
+            var user = await _userManager.FindByEmailAsync(resendEmailConfiremVM.UserNameOrEmail);
+            if (user == null)
+                user = await _userManager.FindByNameAsync(resendEmailConfiremVM.UserNameOrEmail);
+
+            if (user == null)
+            {
+                ModelState.AddModelError(String.Empty, "The user Name / Email  is not valid");
+                TempData["ErrorMessage"] = "The user Name / Email  is not valid";
+                return View(resendEmailConfiremVM);
+            }
+
+            if (user.EmailConfirmed)
+            {
+                ModelState.AddModelError(String.Empty, "Your Email is already confirmed");
+                TempData["ErrorMessage"] = "Your Email is already confirmed";
+                return View(resendEmailConfiremVM);
+            }
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var link = Url.Action(nameof(ConfirmEmail), "Account", new { area = "Identity", token, userId = user.Id }, Request.Scheme);
+
+            await _emailSender.SendEmailAsync(user.Email!, "Confirm Your Email!"
+                , $"<h1>Confirm Your Email By Clicking <a href='{link}'>Here</a></h1>");
+
+            TempData["SuccessMessage"] = "Confirmation email has been resent successfully! Please check your inbox";
+
+            return RedirectToAction("Login");
+
         }
 
         public IActionResult Login()

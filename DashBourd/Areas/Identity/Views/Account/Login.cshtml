@@ -9,10 +9,10 @@
             "closeButton": false,
             "progressBar": true,
             "positionClass": "toast-top-right",
-            "timeOut": "4000",
+            "timeOut": "7000",
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut",
-            "backgroundColor": "#444", // 👈 لون الخلفية الافتراضية للرسائل
+            "backgroundColor": "#333",
             "newestOnTop": true
         };
 
@@ -30,6 +30,20 @@
         });
     </script>
 }
+@* Toster stayl *@
+<style>
+    .toast {
+        opacity: 1 !important; /* لون ثابت */
+    }
+
+    .toast-success {
+        background-color: forestgreen !important; /* أخضر غامق وواضح */
+    }
+
+    .toast-error {
+        background-color: #dc3545 !important; /* أحمر واضح */
+    }
+</style>
 
 <h1>Login</h1>
 
@@ -67,6 +81,8 @@
     <a asp-action="Index">Back to List</a>    
     <br/>
     <a asp-action="Register">Register</a>
+    <br/>
+    <a asp-controller="Account" asp-action="ResendConfiremEmail">Resend Confirem Email</a>
 </div>
 
 

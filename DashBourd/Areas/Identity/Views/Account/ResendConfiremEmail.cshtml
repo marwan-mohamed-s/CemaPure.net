@@ -1,0 +1,72 @@
+﻿@model DashBourd.ViewModel.ResendEmailConfiremVM
+
+@{
+    ViewData["Title"] = "ResendConfiremEmail";
+}
+@section Scripts {
+    <script>
+        toastr.options = {
+            "closeButton": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "7000",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "backgroundColor": "#333",
+            "newestOnTop": true
+        };
+
+
+        // ✅ عرض الرسائل من TempData
+        $(function () {
+            @if (TempData["SuccessMessage"] != null)
+            {
+                        <text>toastr.success("@Html.Raw(TempData["SuccessMessage"])");</text>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                        <text>toastr.error("@Html.Raw(TempData["ErrorMessage"])");</text>
+            }
+        });
+    </script>
+}
+<style>
+    .toast {
+        opacity: 1 !important; /* لون ثابت */
+    }
+
+    .toast-success {
+        background-color: forestgreen !important; /* أخضر غامق وواضح */
+    }
+
+    .toast-error {
+        background-color: #dc3545 !important; /* أحمر واضح */
+    }
+</style>
+
+<h1>ResendConfirmEmail</h1>
+
+<h4>ResendEmailConfiremVM</h4>
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="ResendConfiremEmail">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="UserNameOrEmail" class="control-label"></label>
+                    <input asp-for="UserNameOrEmail" class="form-control" />
+                    <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-3">
+                    <input type="submit" value="Send" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Login">Back to List</a>
+</div>
+
