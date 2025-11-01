@@ -1,0 +1,225 @@
+﻿body {
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 20px;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+.card-header {
+    background: linear-gradient(to right, #0056b3, #007bff);
+    padding: 20px;
+    border-bottom: none;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+    .card-header h4 {
+        margin: 0;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+.card-body {
+    background-color: #ffffff;
+    padding: 30px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease;
+}
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+
+.form-check-input {
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+.btn-outline-secondary {
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+.card-footer {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+    .card-footer a {
+        color: #007bff;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+        .card-footer a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+.text-danger {
+    font-size: 0.9rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+.wave-group {
+    position: relative;
+}
+
+    .wave-group .input {
+        font-size: 16px;
+        padding: 10px 10px 10px 5px;
+        display: block;
+        width: 100%;
+        border: none;
+        border-bottom: 1px solid #515151;
+        background: transparent;
+    }
+
+        .wave-group .input:focus {
+            outline: none;
+        }
+
+    .wave-group .label {
+        color: #999;
+        font-size: 18px;
+        font-weight: normal;
+        position: absolute;
+        pointer-events: none;
+        left: 5px;
+        top: 10px;
+        display: flex;
+    }
+
+    .wave-group .label-char {
+        transition: 0.2s ease all;
+        transition-delay: calc(var(--index) * .05s);
+    }
+
+    .wave-group .input:focus ~ .label .label-char,
+    .wave-group .input:valid ~ .label .label-char {
+        transform: translateY(-20px);
+        font-size: 14px;
+        color: #007bff;
+    }
+
+    .wave-group .bar {
+        position: relative;
+        display: block;
+        width: 100%;
+    }
+
+        .wave-group .bar:before,
+        .wave-group .bar:after {
+            content: '';
+            height: 2px;
+            width: 0;
+            bottom: 1px;
+            position: absolute;
+            background: #007bff;
+            transition: 0.2s ease all;
+        }
+
+        .wave-group .bar:before {
+            left: 50%;
+        }
+
+        .wave-group .bar:after {
+            right: 50%;
+        }
+
+    .wave-group .input:focus ~ .bar:before,
+    .wave-group .input:focus ~ .bar:after {
+        width: 50%;
+    }
+
+.custom-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+    .custom-checkbox input[type='checkbox'] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .custom-checkbox .checkbox {
+        width: 20px;
+        height: 20px;
+        border: solid 3px #2a2a2ab7;
+        border-radius: 6px;
+        transition: all 0.375s;
+        box-sizing: border-box;
+    }
+
+    .custom-checkbox input[type='checkbox']:checked ~ .checkbox {
+        transform: rotate(45deg);
+        width: 14px;
+        margin-left: 5px;
+        border-color: #24c78e;
+        border-width: 5px;
+        border-top-color: transparent;
+        border-left-color: transparent;
+        border-radius: 0;
+    }
+
+.checkbox-label {
+    font-size: 16px;
+    color: #333;
+}

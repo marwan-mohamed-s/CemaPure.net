@@ -1,7 +1,6 @@
 ﻿using Ecommerce1.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace DashBourd.Areas.Custmer.Controllers
 {
@@ -20,7 +19,7 @@ namespace DashBourd.Areas.Custmer.Controllers
 
             if (TempData["FromPageLogin"] == null)
             {
-                TempData["ErrorMessage"] = "You are not authorized to access this page please Login.";
+                TempData["ErrorMessage"] = "You are not authorized to access this page please Login";
                 return RedirectToAction("Login", "Account", new { area = "Identity" });
             }
 
@@ -41,7 +40,7 @@ namespace DashBourd.Areas.Custmer.Controllers
             var movie = _context.Movies
                 .Include(m => m.Category)
                 .Include(m => m.Cinema)
-                .Include(m => m.MovieActors)
+                .Include(m => m.MovieActors!)
                     .ThenInclude(ma => ma.Actor)
                 .FirstOrDefault(m => m.Id == id);
 

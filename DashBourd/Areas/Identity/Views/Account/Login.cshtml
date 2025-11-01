@@ -3,51 +3,73 @@
 @{
     ViewData["Title"] = "Login";
 }
+<link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
 
-<h1>Login</h1>
 
-<h4>LoginVM</h4>
-<hr />
-<div>
-    <div class="row">
-        <div class="col-md-12">
-            <form asp-action="Login">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="UsernameOrEmail" class="control-label"></label>
-                    <input asp-for="UsernameOrEmail" class="form-control" />
-                    <span asp-validation-for="UsernameOrEmail" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Password" class="control-label"></label>
-                    <input asp-for="Password" class="form-control" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-                <div class="form-group form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" asp-for="RememberMe" /> @Html.DisplayNameFor(model => model.RememberMe)
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white text-center">
+                <h4>Login</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Login">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="wave-group mb-4">
+                        <input asp-for="UsernameOrEmail" class="input" required />
+                        <span class="bar"></span>
+                        <label class="label">
+                            <span class="label-char" style="--index: 0">U</span>
+                            <span class="label-char" style="--index: 1">s</span>
+                            <span class="label-char" style="--index: 2">e</span>
+                            <span class="label-char" style="--index: 3">r</span>
+                            <span class="label-char" style="--index: 4">n</span>
+                            <span class="label-char" style="--index: 5">a</span>
+                            <span class="label-char" style="--index: 6">m</span>
+                            <span class="label-char" style="--index: 7">e</span>
+                        </label>
+                        <span asp-validation-for="UsernameOrEmail" class="text-danger"></span>
+                    </div>
+
+                    <div class="wave-group mb-4">
+                        <input asp-for="Password" class="input" required />
+                        <span class="bar"></span>
+                        <label class="label">
+                            <span class="label-char" style="--index: 0">P</span>
+                            <span class="label-char" style="--index: 1">a</span>
+                            <span class="label-char" style="--index: 2">s</span>
+                            <span class="label-char" style="--index: 3">s</span>
+                            <span class="label-char" style="--index: 4">w</span>
+                            <span class="label-char" style="--index: 5">o</span>
+                            <span class="label-char" style="--index: 6">r</span>
+                            <span class="label-char" style="--index: 7">d</span>
+                        </label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <label class="custom-checkbox">
+                        <input asp-for="RememberMe" type="checkbox" class="custom-check" />
+                        <span class="checkbox"></span>
+                        <span class="checkbox-label">@Html.DisplayNameFor(m => m.RememberMe)</span>
                     </label>
-                </div>
-                <div class="form-group mt-4">
-                    <input type="submit" value="Login" class="btn btn-primary" />
-                </div>
-            </form>
+                    <span asp-validation-for="RememberMe" class="text-danger"></span>
+
+                    <div class="d-flex justify-content-between">
+                        <a class="btn btn-outline-secondary mt-3" asp-action="Register">Register</a>
+                        <input type="submit" value="Login" class="btn btn-primary mt-3" />
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-controller="Account" asp-action="ResendConfiremEmail" class="d-block">Resend Confirm Email</a>
+                <a asp-controller="Account" asp-action="ForgetPassword" class="d-block mt-2">Forget the Password</a>
+            </div>
         </div>
     </div>
+</div>
 
-</div>
-<div>
-    <a asp-action="Register">Register</a>
-    <br/>
-    <a asp-controller="Account" asp-action="ResendConfiremEmail">Resend Confirem Email</a>
-    <br/>
-    <a asp-controller="Account" asp-action="ForgetPassword">Forget the Password</a>
-    <br/>
-    <a asp-action="Index">Back to List</a>    
-</div>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-

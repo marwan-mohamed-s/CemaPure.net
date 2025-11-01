@@ -333,7 +333,8 @@ namespace DashBourd.Areas.Identity.Controllers
 
             if (user == null)
             {
-                ModelState.AddModelError(String.Empty, "The user Name / Email or password are not valid");
+                TempData["ErrorMessage"] = "The user Name / Email or password are not valid";
+                //ModelState.AddModelError(String.Empty, "The user Name / Email or password are not valid");
                 return View(loginVM);
             }
 
@@ -343,15 +344,15 @@ namespace DashBourd.Areas.Identity.Controllers
             {
                 if (result.IsLockedOut)
                 {
-                    ModelState.AddModelError(String.Empty, "you have done your 5 times to login , please try again after 5 min");
+                    TempData["ErrorMessage"] = "Your account has been locked out due to multiple failed login attempts. Please try again later.";
                 }
                 else if (!user.EmailConfirmed)
                 {
-                    ModelState.AddModelError(String.Empty, "You must Confirm your Email First");
+                    TempData["ErrorMessage"] = "You must Confirm your Email First";
                 }
                 else
                 {
-                    ModelState.AddModelError(String.Empty, "The user Name / Email or password are not valid");
+                    TempData["ErrorMessage"] = "The user Name / Email or password are not valid";
                 }
                 return View(loginVM);
             }
