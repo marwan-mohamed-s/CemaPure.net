@@ -1,6 +1,7 @@
 ﻿using Ecommerce1.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace DashBourd.Areas.Custmer.Controllers
 {
@@ -16,6 +17,13 @@ namespace DashBourd.Areas.Custmer.Controllers
 
         public IActionResult Index()
         {
+
+            if (TempData["FromPageLogin"] == null)
+            {
+                TempData["ErrorMessage"] = "You are not authorized to access this page please Login.";
+                return RedirectToAction("Login", "Account", new { area = "Identity" });
+            }
+
             var movies = _context.Movies
                 .Include(m => m.Category)
                 .ToList();

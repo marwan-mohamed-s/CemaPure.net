@@ -60,16 +60,4 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
-        $(function () {
-            @if (TempData["SuccessMessage"] != null)
-            {
-                        <text>toastr.success("@TempData["SuccessMessage"]");</text>
-            }
-            @if (TempData["ErrorMessage"] != null)
-            {
-                        <text>toastr.error("@TempData["ErrorMessage"]");</text>
-            }
-        });
-    </script>
 }
