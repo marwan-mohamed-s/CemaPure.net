@@ -5,8 +5,9 @@
 }
 
 .card {
+    margin-top: 50px;
     border: none;
-    border-radius: 12px;
+    border-radius: 20px;
     overflow: hidden;
     animation: fadeIn 0.6s ease-in-out;
 }
@@ -30,12 +31,14 @@
     padding: 30px;
 }
 
+
 .form-label {
     font-weight: 600;
     color: #333;
 }
 
 .form-control {
+    background-color: #2a2a2a;
     border-radius: 8px;
     border: 1px solid #ccc;
     transition: border-color 0.3s ease;

@@ -1,0 +1,235 @@
+﻿/* ----- الخلفية العامة والدواير المتحركة ----- */
+body {
+    background: #f6f7fb;
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* الكارت */
+.card {
+    position: relative;
+    background: #fff;
+    width: 420px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    z-index: 1;
+    overflow: hidden;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* الدواير */
+body::before,
+body::after,
+.card::before,
+.card::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    border: 3px dashed royalblue;
+    opacity: 0.3;
+    animation: rotate 15s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+}
+
+body::before {
+    width: 650px;
+    height: 650px;
+    top: 360px;
+    left: -280px;
+}
+
+body::after {
+    width: 600px;
+    height: 600px;
+    bottom: 150px;
+    right: -250px;
+    border-color: #4c8aff;
+    animation-duration: 20s;
+    animation-direction: reverse;
+}
+
+.card::before {
+    width: 350px;
+    height: 350px;
+    top: -120px;
+    left: -120px;
+}
+
+.card::after {
+    width: 400px;
+    height: 400px;
+    bottom: -150px;
+    right: -150px;
+    border-color: #4c8aff;
+    animation-duration: 20s;
+    animation-direction: reverse;
+}
+
+.extra-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px dashed #5a8fff;
+    opacity: 0.3;
+    width: 450px;
+    height: 450px;
+    top: -250px;
+    left: -200px;
+    animation: rotate 25s linear infinite;
+    z-index: -1;
+    pointer-events: none;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ----- فورم الـ OTP الداخلي ----- */
+.form {
+    --white: #ffffff;
+    --ch-white: #e1e1e1;
+    --night-rider: #2e2e2e;
+    --tomato: #fa5656;
+    font-family: Helvetica, sans-serif;
+    border: 2px solid #4c8aff;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--night-rider);
+    background-color: var(--white);
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,.1);
+}
+
+/* العنوان والوصف */
+.info {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: royalblue;
+}
+
+.description {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #555;
+}
+
+/* الحقول */
+.input-fields {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+    .input-fields input {
+        height: 2.5em;
+        width: 2.5em;
+        outline: none;
+        text-align: center;
+        font-size: 1.5rem;
+        color: var(--night-rider);
+        border-radius: 5px;
+        border: 2.5px solid var(--ch-white);
+        background-color: var(--ch-white);
+    }
+
+        .input-fields input:focus {
+            border: 1px solid royalblue;
+            box-shadow: inset 0 0 10px rgba(0, 0, 255, 0.1);
+            transform: scale(1.05);
+            transition: 0.3s;
+        }
+
+/* الأزرار */
+.action-btns {
+    display: flex;
+    margin-top: 20px;
+    gap: 0.5rem;
+}
+
+.verify {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: white;
+    background: royalblue;
+    border: none;
+    transition: 0.3s ease;
+}
+
+    .verify:hover {
+        background: #355ec9;
+    }
+
+.clear {
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--night-rider);
+    background: transparent;
+    border: 1px solid var(--night-rider);
+    transition: 0.3s ease;
+}
+
+    .clear:hover {
+        color: var(--tomato);
+        border-color: var(--tomato);
+    }
+
+/* زر الإغلاق */
+.close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background-color: var(--ch-white);
+    color: #555;
+    height: 30px;
+    width: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: .3s ease;
+}
+
+    .close:hover {
+        background-color: var(--tomato);
+        color: var(--white);
+    }
