@@ -1,5 +1,4 @@
 ﻿@model DashBourd.ViewModel.ValidateOTPVM
-
 @{
     ViewData["Title"] = "Validate OTP";
 }
@@ -9,13 +8,11 @@
 <div class="extra-circle"></div>
 
 <div class="card">
-    <form asp-action="ValidateOTP" class="form">
-        <span class="close">X</span>
-
+    <form asp-action="ValidateOTP" method="post" class="form">
         <div class="info">
             <span class="title">Two-Factor Verification</span>
             <p class="description">
-                Enter the two-factor authentication code provided by the authenticator app.
+                Enter the 4-digit code from your authenticator app.
             </p>
         </div>
 
@@ -23,16 +20,16 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <div class="input-fields">
-            <input type="tel" maxlength="1" id="otp1" oninput="moveNext(this, 'otp2')" />
-            <input type="tel" maxlength="1" id="otp2" oninput="moveNext(this, 'otp3')" />
-            <input type="tel" maxlength="1" id="otp3" oninput="moveNext(this, 'otp4')" />
-            <input type="tel" maxlength="1" id="otp4" oninput="collectOTP()" />
+            <input type="tel" maxlength="1" id="otp1" oninput="moveNext(this, 'otp2')" placeholder="0" />
+            <input type="tel" maxlength="1" id="otp2" oninput="moveNext(this, 'otp3')" placeholder="0" />
+            <input type="tel" maxlength="1" id="otp3" oninput="moveNext(this, 'otp4')" placeholder="0" />
+            <input type="tel" maxlength="1" id="otp4" oninput="collectOTP()" placeholder="0" />
         </div>
 
         <input type="hidden" asp-for="OTP" id="FullOTP" />
 
         <div class="action-btns">
-            <button type="submit" class="verify">Verify</button>
+            <button type="submit" class="verify">Verify Now</button>
             <button type="button" class="clear" onclick="clearOTP()">Clear</button>
         </div>
     </form>

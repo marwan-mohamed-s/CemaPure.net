@@ -1,0 +1,347 @@
+﻿/* ================== الأساسيات ================== */
+.movie-details-section {
+    max-width: 1200px;
+    margin: 80px auto;
+    padding: 20px;
+    background: transparent !important;
+    font-family: 'Segoe UI', sans-serif;
+    color: #d0c7c7;
+}
+
+/* ================== الكارت الرئيسي ================== */
+.movie-main-card {
+    display: flex;
+    gap: 30px;
+    background: #1d1b1b !important;
+    padding: 35px;
+    border-radius: 24px;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.12);
+    margin-bottom: 60px;
+    transition: all 0.4s ease;
+}
+
+    .movie-main-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+    }
+
+.movie-main-img {
+    width: 320px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    transition: transform 0.4s ease;
+}
+
+    .movie-main-img:hover {
+        transform: scale(1.04);
+    }
+
+.movie-main-info h2 {
+    font-size: 2.2rem;
+    margin: 0 0 15px;
+    color: #ff3b3b;
+}
+
+.movie-meta p {
+    margin: 8px 0;
+    font-size: 1.05rem;
+}
+
+.desc {
+    margin: 20px 0;
+    line-height: 1.7;
+}
+
+.rating {
+    margin: 15px 0;
+}
+
+    .rating span {
+        font-weight: 600;
+        margin-right: 10px;
+    }
+
+.stars {
+    font-size: 1.6rem;
+    color: #ff6b6b;
+    letter-spacing: 3px;
+}
+
+.btn-group {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.book-btn, .trailer-btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(255,59,59,0.3);
+}
+
+.book-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ff3b3b);
+    color: white;
+}
+
+.trailer-btn {
+    background: linear-gradient(135deg, #333, #111);
+    color: white;
+}
+
+.book-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255,59,59,0.4);
+}
+
+.trailer-btn:hover {
+    background: #000;
+}
+
+/* ================== العناوين ================== */
+.section-title {
+    font-size: 2rem;
+    color: #ff3b3b;
+    margin: 0 0 20px 10px;
+    position: relative;
+}
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 70px;
+        height: 4px;
+        background: #ff3b3b;
+        border-radius: 5px;
+    }
+
+/* ================== السيكشن الرمادي ================== */
+.gray-section {
+    background: #1d1b1b !important;
+    padding: 35px;
+    margin: 50px 0;
+    border-radius: 24px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    border: 2px solid #ff3b3b15;
+    backdrop-filter: blur(8px);
+    transition: all 0.4s ease;
+}
+
+    .gray-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 18px 50px rgba(0,0,0,0.2);
+    }
+
+/* ================== معرض الصور ================== */
+.movie-subimages-grid {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.sub-image-card {
+    width: 220px;
+    height: 220px;
+    color: #d0c7c7;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    cursor: zoom-in;
+}
+
+    .sub-image-card:hover {
+        transform: scale(1.07);
+        box-shadow: 0 12px 30px rgba(255,59,59,0.3);
+    }
+
+/* ================== الممثلين ================== */
+.actors-section {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+}
+
+.actor-card {
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+    .actor-card:hover {
+        transform: translateY(-8px);
+    }
+
+.actor-img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #ff3b3b30;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    transition: all 0.4s ease;
+}
+
+    .actor-img:hover {
+        transform: scale(1.15);
+        border-color: #ff3b3b;
+    }
+
+.actor-name {
+    margin-top: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #d0c7c7;
+}
+
+/* ================== مودال التريلر ================== */
+/* —— التريلر في منتصف الشاشة 100% —— */
+.trailer-modal {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.98);
+    backdrop-filter: blur(15px);
+    /* النص في المنتصف */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.trailer-container {
+    position: relative;
+    width: 90%;
+    max-width: 1000px;
+    aspect-ratio: 16 / 9;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 35px 120px rgba(255, 59, 59, 0.6);
+    border: 5px solid rgba(255, 59, 59, 0.4);
+}
+
+#trailerFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* —— زر X فوق يمين تماماً —— */
+.close-btn {
+    position: absolute;
+    top: -70px;
+    right: -20px;
+    width: 60px;
+    height: 60px;
+    background: #ff3b3b;
+    color: white;
+    font-size: 34px;
+    font-weight: bold;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 999999;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+    .close-btn:hover {
+        background: #ff0000;
+        transform: scale(1.2) rotate(90deg);
+    }
+
+/* موبايل */
+@media (max-width: 768px) {
+    .trailer-container {
+        width: 95%;
+        border-radius: 20px;
+    }
+
+    .close-btn {
+        top: -60px;
+        right: -15px;
+        width: 50px;
+        height: 50px;
+        font-size: 28px;
+    }
+}
+
+/* ================== أنيميشن ================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-card {
+    animation: fadeIn 0.9s ease forwards;
+}
+
+.fade-in {
+    animation: fadeIn 1s ease forwards;
+}
+
+.fade-up {
+    animation: fadeUp 1.2s ease forwards;
+}
+
+/* ================== Responsive ================== */
+@media (max-width: 768px) {
+    .movie-main-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .movie-main-img {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .btn-group {
+        justify-content: center;
+    }
+
+    .sub-image-card {
+        width: 150px;
+        height: 150px;
+    }
+
+    .actor-img {
+        width: 100px;
+        height: 100px;
+    }
+}
