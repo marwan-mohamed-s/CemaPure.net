@@ -1,5 +1,6 @@
 ﻿using DashBourd.Models;
 using Ecommerce1.DataAccess;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -7,6 +8,7 @@ using System.Security.Claims;
 namespace DashBourd.Areas.Custmer.Controllers
 {
     [Area("Custmer")]
+    [Authorize]
     public class MoviesController : Controller
     {
         private readonly ApplicationDbContext _context;

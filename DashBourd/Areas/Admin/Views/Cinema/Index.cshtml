@@ -1,11 +1,12 @@
-﻿@model IEnumerable<DashBourd.Models.Cinema>
+﻿@using ECommerce.Utitlies
+@model IEnumerable<DashBourd.Models.Cinema>
 
 @{
     ViewData["Title"] = "Cinemas List";
 }
 
 <style>
-    .card {
+    .Card {
         width: 250px;
         height: 250px;
         border-radius: 15px;
@@ -17,11 +18,11 @@
         transition: transform 0.3s ease;
     }
 
-        .card:hover {
+        .Card:hover {
             transform: translateY(-5px);
         }
 
-        .card::before {
+        .Card::before {
             content: "";
             height: 100px;
             width: 100px;
@@ -34,7 +35,7 @@
             filter: blur(.5rem);
         }
 
-        .card:hover::before {
+        .Card:hover::before {
             width: 140px;
             height: 140px;
             top: -30%;
@@ -107,7 +108,15 @@
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-primary">🎬 Cinemas List</h2>
-        <a asp-action="Create" class="btn btn-primary">+ Add</a>
+        @if (User.IsInRole(SD.ADMIN_ROLE) || User.IsInRole(SD.SUPER_ADMIN_ROLE))
+        {
+            <a asp-action="Create" class="btn btn-primary">+ Add</a>
+
+        }
+        else
+        {
+            <span class="text-muted"></span>
+        }
     </div>
 
     @if (Model != null && Model.Any())
@@ -115,17 +124,25 @@
         <div data-aos="fade-up" class="d-flex flex-wrap justify-content-center gap-4">
             @foreach (var cinema in Model)
             {
-                <div data-aos="fade-up" class="card">
+                <div data-aos="fade-up" class="Card">
                     <div class="text">
                         <img src="~/images/Cinemas/@cinema.Image" alt="@cinema.Name" />
                         <span>@cinema.Name</span>
                         <p class="subtitle">Cinema</p>
                     </div>
                     <div class="icons">
-                        <a asp-action="Edit" asp-route-id="@cinema.Id" class="btn Edit">Edit</a>
-                        <form class="delete-btn" asp-action="Delete" asp-route-id="@cinema.Id" method="post" style="display:inline;">
-                            <button type="submit" class="btn Danger">Delete</button>
-                        </form>
+                        @if (User.IsInRole(SD.ADMIN_ROLE) || User.IsInRole(SD.SUPER_ADMIN_ROLE))
+                        {
+                            <a asp-action="Edit" asp-route-id="@cinema.Id" class="btn Edit">Edit</a>
+                            <form class="delete-btn" asp-action="Delete" asp-route-id="@cinema.Id" method="post" style="display:inline;">
+                                <button type="submit" class="btn Danger">Delete</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No Action Available</span>
+                        }
+
                     </div>
                 </div>
             }

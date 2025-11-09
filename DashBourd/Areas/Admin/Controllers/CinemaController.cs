@@ -1,10 +1,14 @@
 ﻿using DashBourd.Models;
+using ECommerce.Utitlies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace DashBourd.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE},{SD.EMPLOYEE_ROLE}")]
+
     public class CinemaController : Controller
     {
         private readonly IGenericRepository<Cinema> _repository;
@@ -21,12 +25,14 @@ namespace DashBourd.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
         public IActionResult Create()
         {
             return View(new Cinema());
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
         public async Task<IActionResult> Create(Cinema cinema, [Required] IFormFile Image)
         {
             if (!ModelState.IsValid)
@@ -52,6 +58,7 @@ namespace DashBourd.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
         public async Task<IActionResult> Edit(int id)
         {
             var cinema = await _repository.GetOneAsync(c => c.Id == id);
@@ -62,6 +69,7 @@ namespace DashBourd.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
         public async Task<IActionResult> Edit(Cinema cinema, IFormFile Image)
         {
             var existingCinema = await _repository.GetOneAsync(c => c.Id == cinema.Id);
@@ -97,7 +105,7 @@ namespace DashBourd.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
         public async Task<IActionResult> Delete(int id)
         {
             var cinema = await _repository.GetOneAsync(c => c.Id == id);

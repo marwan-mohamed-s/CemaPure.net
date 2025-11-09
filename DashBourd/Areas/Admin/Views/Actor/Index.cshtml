@@ -1,4 +1,5 @@
-﻿@model IEnumerable<DashBourd.Models.Actor>
+﻿@using ECommerce.Utitlies
+@model IEnumerable<DashBourd.Models.Actor>
 
 @{
     ViewData["Title"] = "Actors List";
@@ -98,7 +99,14 @@
 <div data-aos="fade-up" class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-primary">🎭 Actors List</h2>
-        <a asp-action="Create" class="btn btn-primary">+ Add New Actor</a>
+        @if (User.IsInRole(SD.ADMIN_ROLE) || User.IsInRole(SD.SUPER_ADMIN_ROLE))
+        {
+            <a asp-action="Create" class="btn btn-primary">+ Add New Actor</a>
+        }
+        else
+        {
+            <span class="text-muted"></span>
+        }
     </div>
 
     @if (Model != null && Model.Any())
@@ -115,11 +123,19 @@
                     <p class="job">Actor</p>
 
                     <div class="btn-group">
-                        <a asp-action="Edit" asp-route-id="@actor.Id" class="edit-btn">Edit</a>
+                        @if (User.IsInRole(SD.ADMIN_ROLE) || User.IsInRole(SD.SUPER_ADMIN_ROLE))
+                        {
+                            <a asp-action="Edit" asp-route-id="@actor.Id" class="edit-btn">Edit</a>
 
-                        <form class="delete-btn" asp-action="Delete" asp-route-id="@actor.Id" method="post" style="display:inline;">
-                            <button  type="submit" class="delete-btn">Delete</button>
-                        </form>
+                            <form class="delete-btn" asp-action="Delete" asp-route-id="@actor.Id" method="post" style="display:inline;">
+                                <button type="submit" class="delete-btn">Delete</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No Action Available</span>
+                        }
+
                     </div>
                 </div>
             }

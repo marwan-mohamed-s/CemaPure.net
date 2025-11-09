@@ -1,9 +1,13 @@
 ﻿using DashBourd.Models;
+using ECommerce.Utitlies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DashBourd.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE},{SD.EMPLOYEE_ROLE}")]
+
     public class ActorController : Controller
     {
         private readonly IGenericRepository<Actor> _actorRepo;
@@ -22,9 +26,13 @@ namespace DashBourd.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
+
         public IActionResult Create() => View();
 
         [HttpPost]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
+
         public async Task<IActionResult> Create(Actor actor, IFormFile? Image)
         {
             if (!ModelState.IsValid)
@@ -50,6 +58,8 @@ namespace DashBourd.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
+
         public async Task<IActionResult> Edit(int id)
         {
             var actor = await _actorRepo.GetOneAsync(a => a.Id == id);
@@ -60,6 +70,8 @@ namespace DashBourd.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
+
         public async Task<IActionResult> Edit(Actor actor, IFormFile? Img)
         {
             var existing = await _actorRepo.GetOneAsync(a => a.Id == actor.Id);
@@ -95,6 +107,8 @@ namespace DashBourd.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
+
         public async Task<IActionResult> Delete(int id)
         {
             var actor = await _actorRepo.GetOneAsync(a => a.Id == id);

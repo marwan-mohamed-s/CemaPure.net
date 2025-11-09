@@ -1,4 +1,6 @@
 ﻿using DashBourd.Models;
+using ECommerce.Utitlies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +10,8 @@ using System.Linq.Expressions;
 namespace DashBourd.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE},{SD.EMPLOYEE_ROLE}")]
+
     public class MovieController : Controller
     {
         private readonly ILogger<MovieController> _logger;
@@ -46,6 +50,7 @@ namespace DashBourd.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Categories = await _categoryRepo.GetAsync();
@@ -61,6 +66,8 @@ namespace DashBourd.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
+
         public async Task<IActionResult> Create(Movie movie, IFormFile MainImage, List<IFormFile> SubImages, List<int> Actors)
         {
 
@@ -156,7 +163,9 @@ namespace DashBourd.Controllers
             return View(movie);
         }
 
-        [HttpGet]
+        [HttpGet]        
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
+
         public async Task<IActionResult> Edit(int id)
         {
             var movie = await _movieRepo.GetOneAsync(m => m.Id == id);
@@ -175,7 +184,9 @@ namespace DashBourd.Controllers
             return View(movie);
         }
 
-        [HttpPost]
+        [HttpPost]        
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
+
         public async Task<IActionResult> Edit(Movie movie, IFormFile Img, List<IFormFile> SubImgs)
         {
             var existingMovie = await _movieRepo.GetOneAsync(m => m.Id == movie.Id);
@@ -227,7 +238,9 @@ namespace DashBourd.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
+        [HttpPost]        
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
+
         public async Task<IActionResult> Delete(int id)
         {
             var movie = await _movieRepo.GetOneAsync(m => m.Id == id);

@@ -1,10 +1,12 @@
 ﻿using Ecommerce1.DataAccess;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DashBourd.Areas.Custmer.Controllers
 {
     [Area("Custmer")]
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -17,11 +19,6 @@ namespace DashBourd.Areas.Custmer.Controllers
         public IActionResult Index()
         {
 
-            if (TempData["FromPageLogin"] == null)
-            {
-                TempData["ErrorMessage"] = "You are not authorized to access this page please Login";
-                return RedirectToAction("Login", "Account", new { area = "Identity" });
-            }
 
             var movies = _context.Movies
                 .Include(m => m.Category)

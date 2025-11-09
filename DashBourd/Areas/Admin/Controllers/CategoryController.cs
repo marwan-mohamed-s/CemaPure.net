@@ -1,9 +1,13 @@
 ﻿using DashBourd.Models;
+using ECommerce.Utitlies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DashBourd.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE},{SD.EMPLOYEE_ROLE}")]
+
     public class CategoryController : Controller
     {
         private readonly IGenericRepository<Category> _repository;
@@ -20,12 +24,14 @@ namespace DashBourd.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
         public async Task<IActionResult> Create(Category category)
         {
             if (!ModelState.IsValid)
@@ -38,6 +44,7 @@ namespace DashBourd.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
         public async Task<IActionResult> Edit(int id)
         {
             var category = await _repository.GetOneAsync(c => c.Id == id);
@@ -46,8 +53,8 @@ namespace DashBourd.Controllers
 
             return View(category);
         }
-
         [HttpPost]
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
         public async Task<IActionResult> Edit(Category category)
         {
             if (!ModelState.IsValid)
@@ -64,7 +71,7 @@ namespace DashBourd.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
+        [Authorize(Roles = $"{SD.ADMIN_ROLE},{SD.SUPER_ADMIN_ROLE}")]
         public async Task<IActionResult> Delete(int id)
         {
             var category = await _repository.GetOneAsync(c => c.Id == id);

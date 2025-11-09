@@ -1,5 +1,7 @@
 ﻿using DashBourd.Models;
 using DashBourd.Repositories;
+using DashBourd.Utilites.DBInitilizer;
+using ECommerce.Utitlies.DBInitilizer;
 using Ecommerce1.DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -42,8 +44,15 @@ namespace DashBourd
 
             // 4️⃣ تفعيل MVC
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IDBInitializer, DBInitializer>();
 
             var app = builder.Build();
+
+ 
+
+            var scope = app.Services.CreateScope();
+            var service = scope.ServiceProvider.GetService<IDBInitializer>();
+            service!.Initialize();
 
             // 5️⃣ التعامل مع الأخطاء
             if (!app.Environment.IsDevelopment())

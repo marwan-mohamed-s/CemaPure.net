@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using ECommerce.Utitlies
+<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
@@ -76,6 +77,19 @@
 					<path d="M4 19h16M4 5h16M4 12h16" />
 				</svg>
 			</a>
+
+			<!-- زر الداش بورد الجديد -->
+			@if (User.IsInRole(SD.ADMIN_ROLE) || User.IsInRole(SD.SUPER_ADMIN_ROLE))
+			{
+				<a href="@Url.Action("Index", "Home", new { area = "Admin" })"
+				   class="dock-item"
+				   data-tooltip="Dashboard">
+					<svg class="icon" viewBox="0 0 24 24" fill="none" stroke-width="2">
+						<path d="M3 12h4l3 9 4-18 3 9h4" />
+						<circle cx="12" cy="12" r="10" />
+					</svg>
+				</a>
+			}
 		</div>
 	</div>
 
