@@ -17,6 +17,7 @@ namespace Ecommerce1.DataAccess
         public DbSet<Actor> Actors { get; set; }
         public DbSet<MovieActor> MovieActors { get; set; }
         public DbSet<ApplicationUserOTP> ApplicationUserOTPs { get; set; }
+        public DbSet<Booking> Bookings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

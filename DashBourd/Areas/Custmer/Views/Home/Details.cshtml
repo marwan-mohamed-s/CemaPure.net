@@ -28,7 +28,7 @@
             <p class="desc"><strong>Description :</strong> @Model.Description</p>
 
             <div class="btn-group">
-                <button class="book-btn">Book Ticket</button>
+                <a asp-action="BookTicket" asp-controller="Movies" asp-route-id="@Model.Id" class="book-btn">Book Ticket</a>
                 <button class="trailer-btn" onclick="openTrailer()">Watch Trailer</button>
             </div>
         </div>
@@ -36,24 +36,24 @@
 
     <!-- ================== معرض الصور ================== -->
     <div class="fade-in">
-    @if (Model.SubImages?.Count > 0)
-    {
-        <h3 class="section-title">Movie Gallery</h3>
-        <div class="gray-section">
-            <div class="movie-subimages-grid">
-                @foreach (var img in Model.SubImages)
-                {
-                    <a href="~/images/MovieSubImg/@img" data-fancybox="gallery" data-caption="@Model.Name">
-                        <img src="~/images/MovieSubImg/@img" alt="Gallery" class="sub-image-card" />
-                    </a>
-                }
+        @if (Model.SubImages?.Count > 0)
+        {
+            <h3 class="section-title">Movie Gallery</h3>
+            <div class="gray-section">
+                <div class="movie-subimages-grid">
+                    @foreach (var img in Model.SubImages)
+                    {
+                        <a href="~/images/MovieSubImg/@img" data-fancybox="gallery" data-caption="@Model.Name">
+                            <img src="~/images/MovieSubImg/@img" alt="Gallery" class="sub-image-card" />
+                        </a>
+                    }
+                </div>
             </div>
-        </div>
-    }
+        }
     </div>
 
     <!-- ================== الممثلين ================== -->
-<div class="fade-in">
+    <div class="fade-in">
         @if (Model.MovieActors?.Count > 0)
         {
             <h3 class="section-title">All Casts</h3>
@@ -70,7 +70,7 @@
                 </div>
             </div>
         }
-</div>
+    </div>
 </section>
 
 
@@ -87,7 +87,7 @@
         </iframe>
     </div>
 </div>
- 
+
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
