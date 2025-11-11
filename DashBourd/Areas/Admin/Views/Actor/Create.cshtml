@@ -30,56 +30,51 @@
 	</div>
 </div>
 <script>
-	document.getElementById("ActorForm").addEventListener("submit", function (e) {
-		e.preventDefault(); // منع الإرسال التلقائي
+    document.getElementById(".ActorForm").addEventListener("submit", function (e) {
+        e.preventDefault(); // منع الإرسال التلقائي
 
-		var form = $(this);
-		var name = $("input[name='Name']").val().trim(); // اسم الممثل
-		var image = $("input[name='Image']").val(); // مسار الصورة
+        // جلب القيم من الفورم
+        const name = document.getElementById("Name").value.trim();
+        const image = document.getElementById("Image").files.length;
 
-		// التحقق من الفاليديشن العادية + إن القيمتين مش فاضيين
-		if (!form.valid() || name === "" || image === "") {
-			// لو في أي نقص، نمنع الإرسال نهائيًا
-			return;
-		}
+        // التحقق إن الحقول متعبيه
+        if (name === "" || image === 0) {
+            // ما يظهرش Swal هنا، بس نمنع الإرسال
+            return;
+        }
 
-		// لو كله تمام، نعرض رسالة التأكيد
-		Swal.fire({
-			title: "Are you sure you want to save this Actor?",
-			text: "The Actor will be saved now",
-			icon: "question",
-			showCancelButton: true,
-			confirmButtonText: "Yes, save it",
-			cancelButtonText: "Cancel"
-		}).then((result) => {
-			if (result.isConfirmed) {
-				Swal.fire({
-					title: "Saved successfully",
-					text: "The Actor has been added",
-					icon: "success",
-					timer: 1500,
-					showConfirmButton: false
-				}).then(() => {
-					form.off('submit').submit(); // إرسال الفورم فعليًا بعد النجاح
-				});
-			} else {
-				Swal.fire({
-					title: "Cancelled",
-					text: "The Actor was not saved",
-					icon: "info",
-					timer: 1500,
-					showConfirmButton: false
-				});
-			}
-		});
-	});
+        // لو الاتنين تمام يبدأ Swal
+        Swal.fire({
+            title: "Are you sure you want to save this Cinema?",
+            text: "The Cinema will be saved now",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Yes, save it",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Saved successfully",
+                    text: "The Cinema has been added",
+                    icon: "success",
+                    timer: 2000,
+                    showConfirmButton: false,
+                    willClose: () => {
+                        e.target.submit(); // إرسال الفورم بعد نجاح الرسالة
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: "Cancelled",
+                    text: "The Cinema was not saved",
+                    icon: "info",
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        });
+    });
 </script>
-
-
-
-
 @section Scripts {
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
+    <partial name="_ValidationScriptsPartial" />
 }
