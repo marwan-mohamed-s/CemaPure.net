@@ -63,7 +63,6 @@ namespace DashBourd.Areas.Custmer.Controllers
 
             try
             {
-                // ✅ إنشاء جلسة دفع Stripe
                 var options = new Stripe.Checkout.SessionCreateOptions
                 {
                     PaymentMethodTypes = new List<string> { "card" },
@@ -86,9 +85,8 @@ namespace DashBourd.Areas.Custmer.Controllers
             },
                     Mode = "payment",
 
-                    // ✅ نبعث المعلومات مع URL النجاح
-                    SuccessUrl = $"{Request.Scheme}://{Request.Host}/customer/movies/BookingSuccess?movieId={movieId}&seats={string.Join(",", seats)}",
-                    CancelUrl = $"{Request.Scheme}://{Request.Host}/customer/movies/BookingCancel?movieId={movieId}"
+                    SuccessUrl = $"{Request.Scheme}://{Request.Host}/custmer/movies/BookingSuccess?movieId={movieId}&seats={string.Join(",", seats)}",
+                    CancelUrl = $"{Request.Scheme}://{Request.Host}/custmer/movies/BookingCancel?movieId={movieId}"
                 };
 
                 var service = new Stripe.Checkout.SessionService();
@@ -135,6 +133,7 @@ namespace DashBourd.Areas.Custmer.Controllers
             await _context.SaveChangesAsync();
 
             ViewBag.Movie = movie;
+            ViewBag.MovieId = movieId;
             ViewBag.SelectedSeats = seatList;
             return View();
         }

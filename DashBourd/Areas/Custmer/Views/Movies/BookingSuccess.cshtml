@@ -1,5 +1,16 @@
-﻿<div class="container text-center my-5 mt-5">
-    <h2>✅ Payment Successful!</h2>
-    <p>تم دفع قيمة الحجز بنجاح للفيلم <strong>@ViewBag.Movie?.Name</strong>.</p>
-    <a href="/Custmer/Movies/Details/@ViewBag.Movie?.Id" class="btn btn-success mt-3">العودة للتفاصيل</a>
-</div>
+﻿@{
+    ViewData["Title"] = "تم الحجز بنجاح!";
+}
+
+<link rel="stylesheet" href="~/css/BookingConfirmed.css" asp-append-version="true" />
+
+<section class="confirmed-section">
+    <div class="container">
+        <div class="success-icon">✓</div>
+        <h1>Booking Ticket Successfully !</h1>
+        <p>Thank You , And Enjoy The Film See You Later .</p>
+        <a asp-controller="Home" asp-action="Details" asp-route-id="@ViewBag.MovieId" class="back-btn">
+            ← Back To Film
+        </a>
+    </div>
+</section>
