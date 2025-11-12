@@ -237,7 +237,8 @@
                     <p>📂 Category: <strong>@item.Category?.Name</strong></p>
                     <p>📅 Date: @item.DateTime.ToString("dd MMM yyyy")</p>
                     <div class="movie-actions">
-                        <button class="book-btn">🎟️ Book Ticket</button>
+                        <a asp-action="BookTicket" asp-controller="Movies" asp-route-id="@item.Id" class="book-btn">🎟️ Book Ticket</a>
+
                         <a class="info-btn"
                            asp-area="Custmer"
                            asp-controller="Home"

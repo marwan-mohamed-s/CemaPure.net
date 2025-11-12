@@ -6,6 +6,7 @@ using Ecommerce1.DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 namespace DashBourd
 {
@@ -48,7 +49,8 @@ namespace DashBourd
 
             var app = builder.Build();
 
- 
+            StripeConfiguration.ApiKey = "sk_test_51SSNDKROK5tMxDYnvA5TpsKplcMdr0SUGhgDDZykuEWmL1thXuFRWBkHiCzVBFeLNVv76VWxoUYFSJhPb2moXCHy0017smpmKH";
+
 
             var scope = app.Services.CreateScope();
             var service = scope.ServiceProvider.GetService<IDBInitializer>();

@@ -2,6 +2,7 @@
 using Ecommerce1.DataAccess;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -17,7 +18,6 @@ namespace DashBourd.Areas.Custmer.Controllers
         {
             _context = context;
         }
-        // عرض تفاصيل الفيلم (الصفحة الأصلية)
         public async Task<IActionResult> Details(int id)
         {
             var movie = await _context.Movies
@@ -32,7 +32,6 @@ namespace DashBourd.Areas.Custmer.Controllers
             return View(movie);
         }
 
-        // صفحة الحجز
         public async Task<IActionResult> BookTicket(int id)
         {
             var movie = _context.Movies
@@ -49,7 +48,6 @@ namespace DashBourd.Areas.Custmer.Controllers
             return View(movie);
         }
 
-        // تأكيد الحجز
         [HttpPost]
         public async Task<IActionResult> ConfirmBooking(int movieId, string[] seats)
         {
@@ -60,38 +58,94 @@ namespace DashBourd.Areas.Custmer.Controllers
                 return RedirectToAction("BookTicket", new { id = movieId });
             }
 
+            var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == movieId);
+            if (movie == null) return NotFound();
+
             try
             {
-                foreach (var seat in seats)
+                // ✅ إنشاء جلسة دفع Stripe
+                var options = new Stripe.Checkout.SessionCreateOptions
                 {
-                    var exists = await _context.Bookings
-                        .AnyAsync(b => b.MovieId == movieId && b.SeatNumber == seat);
-
-                    if (!exists)
+                    PaymentMethodTypes = new List<string> { "card" },
+                    LineItems = new List<Stripe.Checkout.SessionLineItemOptions>
+            {
+                new Stripe.Checkout.SessionLineItemOptions
+                {
+                    PriceData = new Stripe.Checkout.SessionLineItemPriceDataOptions
                     {
-                        _context.Bookings.Add(new Booking
+                        Currency = "egp",
+                        ProductData = new Stripe.Checkout.SessionLineItemPriceDataProductDataOptions
                         {
-                            MovieId = movieId,
-                            UserId = userId,
-                            SeatNumber = seat,
-                            BookingDate = DateTime.Now
-                        });
-                    }
+                            Name = movie.Name,
+                            Description = $"Seats: {string.Join(", ", seats)}"
+                        },
+                        UnitAmount = (long)(movie.Price * 100),
+                    },
+                    Quantity = seats.Length
                 }
+            },
+                    Mode = "payment",
 
-                await _context.SaveChangesAsync();
+                    // ✅ نبعث المعلومات مع URL النجاح
+                    SuccessUrl = $"{Request.Scheme}://{Request.Host}/customer/movies/BookingSuccess?movieId={movieId}&seats={string.Join(",", seats)}",
+                    CancelUrl = $"{Request.Scheme}://{Request.Host}/customer/movies/BookingCancel?movieId={movieId}"
+                };
 
-                // تمرير البيانات لصفحة التأكيد
-                ViewBag.MovieId = movieId;
-                ViewBag.SelectedSeats = seats;
+                var service = new Stripe.Checkout.SessionService();
+                var session = service.Create(options);
 
-                return View("BookingConfirmed");
+                return Redirect(session.Url);
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "فشل في الحجز: " + ex.Message;
+                TempData["Error"] = "فشل في بدء عملية الدفع: " + ex.Message;
                 return RedirectToAction("BookTicket", new { id = movieId });
             }
         }
+
+
+        public async Task<IActionResult> BookingSuccess(int movieId, string seats)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("BookTicket", new { id = movieId });
+
+            var movie = await _context.Movies.FirstOrDefaultAsync(m => m.Id == movieId);
+            if (movie == null) return NotFound();
+
+            var seatList = seats.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var seat in seatList)
+            {
+                var exists = await _context.Bookings
+                    .AnyAsync(b => b.MovieId == movieId && b.SeatNumber == seat);
+
+                if (!exists)
+                {
+                    _context.Bookings.Add(new Booking
+                    {
+                        MovieId = movieId,
+                        UserId = userId,
+                        SeatNumber = seat,
+                        BookingDate = DateTime.Now
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            ViewBag.Movie = movie;
+            ViewBag.SelectedSeats = seatList;
+            return View();
+        }
+
+
+        public IActionResult BookingCancel(int movieId)
+        {
+            ViewBag.Movie = _context.Movies.Find(movieId);
+            return View();
+        }
+
+
     }
 }
