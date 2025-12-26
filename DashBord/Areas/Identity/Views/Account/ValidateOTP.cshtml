@@ -1,0 +1,65 @@
+﻿@model DashBourd.ViewModel.ValidateOTPVM
+@{
+    ViewData["Title"] = "Validate OTP";
+}
+
+<link rel="stylesheet" href="~/css/ValidateOTP.css" asp-append-version="true" />
+
+<div class="extra-circle"></div>
+
+<div class="card">
+    <form asp-action="ValidateOTP" method="post" class="form">
+        <div class="info">
+            <span class="title">Two-Factor Verification</span>
+            <p class="description">
+                Enter the 4-digit code from your authenticator app.
+            </p>
+        </div>
+
+        <input type="hidden" asp-for="ApplicationUserId" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="input-fields">
+            <input type="tel" maxlength="1" id="otp1" oninput="moveNext(this, 'otp2')" placeholder="0" />
+            <input type="tel" maxlength="1" id="otp2" oninput="moveNext(this, 'otp3')" placeholder="0" />
+            <input type="tel" maxlength="1" id="otp3" oninput="moveNext(this, 'otp4')" placeholder="0" />
+            <input type="tel" maxlength="1" id="otp4" oninput="collectOTP()" placeholder="0" />
+        </div>
+
+        <input type="hidden" asp-for="OTP" id="FullOTP" />
+
+        <div class="action-btns">
+            <button type="submit" class="verify">Verify Now</button>
+            <button type="button" class="clear" onclick="clearOTP()">Clear</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script>
+    function moveNext(current, nextId) {
+        if (current.value.length === 1) {
+            const next = document.getElementById(nextId);
+            if (next) next.focus();
+        }
+        collectOTP();
+    }
+
+    function collectOTP() {
+        const otp = [...document.querySelectorAll('.input-fields input')]
+            .map(i => i.value)
+            .join('');
+        document.getElementById('FullOTP').value = otp;
+    }
+
+    function clearOTP() {
+        document.querySelectorAll('.input-fields input').forEach(i => i.value = '');
+        document.getElementById('FullOTP').value = '';
+        document.getElementById('otp1').focus();
+    }
+</script>

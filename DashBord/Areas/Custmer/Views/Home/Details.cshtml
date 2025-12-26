@@ -1,0 +1,126 @@
+﻿@model DashBourd.Models.Movie
+@{
+    ViewData["Title"] = Model.Name;
+}
+<link rel="stylesheet" href="~/css/MovieDetails.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+<section class="movie-details-section">
+    <!-- ================== الكارت الرئيسي ================== -->
+    <div class="movie-main-card animate-card fade-in">
+        <img src="~/images/@Model.MainImage" alt="@Model.Name" class="movie-main-img" />
+
+        <div class="movie-main-info fade-in">
+            <h2>@Model.Name</h2>
+
+            <div class="movie-meta">
+                <p><strong>Category :</strong> @Model.Category?.Name</p>
+                <p><strong>Date :</strong> @Model.DateTime.ToString("dd MMM yyyy")</p>
+                <p><strong>Cinema :</strong> @Model.Cinema?.Name</p>
+                <p><strong>Price :</strong> $@Model.Price</p>
+            </div>
+
+            <div class="rating">
+                <span>Rating:</span>
+                <div class="stars" data-rating="4.5"></div>
+            </div>
+
+            <p class="desc"><strong>Description :</strong> @Model.Description</p>
+
+            <div class="btn-group">
+                <a asp-action="BookTicket" asp-controller="Movies" asp-route-id="@Model.Id" class="book-btn">Book Ticket</a>
+                <button class="trailer-btn" onclick="openTrailer()">Watch Trailer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================== معرض الصور ================== -->
+    <div class="fade-in">
+        @if (Model.SubImages?.Count > 0)
+        {
+            <h3 class="section-title">Movie Gallery</h3>
+            <div class="gray-section">
+                <div class="movie-subimages-grid">
+                    @foreach (var img in Model.SubImages)
+                    {
+                        <a href="~/images/MovieSubImg/@img" data-fancybox="gallery" data-caption="@Model.Name">
+                            <img src="~/images/MovieSubImg/@img" alt="Gallery" class="sub-image-card" />
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- ================== الممثلين ================== -->
+    <div class="fade-in">
+        @if (Model.MovieActors?.Count > 0)
+        {
+            <h3 class="section-title">All Casts</h3>
+            <div class="gray-section">
+                <div class="actors-section">
+                    @foreach (var ma in Model.MovieActors)
+                    {
+                        <div class="actor-card fade-up">
+                            <img src="~/images/Actors/@(ma.Actor?.Image ?? "default.png")"
+                                 alt="@ma.Actor?.Name" class="actor-img" />
+                            <p class="actor-name">@ma.Actor?.Name</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+
+
+<!-- Trailer Modal -->
+<div id="trailerModal" class="trailer-modal" style="display:none;">
+    <div class="trailer-container">
+        <div class="close-btn" onclick="closeTrailer()">X</div>
+        <iframe id="trailerFrame"
+                src=""
+                frameborder="0"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen>
+        </iframe>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+    <script>
+        // نجوم التقييم
+        $('.stars').each(function () {
+            let rating = $(this).data('rating');
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += i <= rating ? '★' : '☆';
+            }
+            $(this).html(stars);
+        });
+
+        // فتح التريلر
+        function openTrailer() {
+            const youtubeId = "Y7UispSuNVw"; // غيّر بالـ ID اللي عايزه
+            const url = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`;
+
+            $('#trailerFrame').attr('src', url);
+            $('#trailerModal').fadeIn(400);
+        }
+
+        function closeTrailer() {
+            $('#trailerModal').fadeOut(400);
+            setTimeout(() => {
+                $('#trailerFrame').attr('src', ''); // يفرّغ الفيديو تماماً
+            }, 500);
+        }
+
+        // إغلاق بالضغط خارج الفيديو
+        $(document).on('click', function (e) {
+            if ($(e.target).is('#trailerModal')) closeTrailer();
+        });
+    </script>
+}
